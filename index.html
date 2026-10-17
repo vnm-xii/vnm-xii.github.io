@@ -15,7 +15,8 @@
             --card-bg: rgba(18, 19, 28, 0.65);
             --card-border: rgba(255, 255, 255, 0.12);
             --ai-cyan: #00f2fe;
-            --ai-purple: #8a2be2;
+            --blood-red: #b30000;
+            --blood-glow: #ff0015;
             --text-main: #ffffff;
             --text-muted: #94a3b8;
         }
@@ -61,8 +62,8 @@
             z-index: 0;
             pointer-events: none;
         }
-        .orb-1 { top: -80px; right: -80px; background: var(--ai-cyan); }
-        .orb-2 { bottom: -80px; left: -80px; background: var(--ai-purple); }
+        .orb-1 { top: -80px; right: -80px; background: var(--blood-red); }
+        .orb-2 { bottom: -80px; left: -80px; background: var(--ai-cyan); }
 
         .container {
             width: 100%;
@@ -95,12 +96,12 @@
         }
 
         .share-btn:hover {
-            background: rgba(0, 242, 254, 0.15);
-            border-color: var(--ai-cyan);
+            background: rgba(179, 0, 0, 0.25);
+            border-color: var(--blood-glow);
             transform: scale(1.08);
         }
 
-        /* الصورة الشخصية بحلقة الذكاء الاصطناعي */
+        /* الصورة الشخصية بالحلقة الحمراء الدموية */
         .avatar-wrapper {
             position: relative;
             width: 122px;
@@ -115,11 +116,11 @@
             position: absolute;
             inset: -4px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--ai-cyan), var(--ai-purple), #ff0050, var(--ai-cyan));
+            background: linear-gradient(135deg, #4a0000, #990000, #ff0019, #800000, #3a0000);
             background-size: 300% 300%;
-            animation: spinGradient 5s ease infinite;
+            animation: spinGradient 4s ease infinite;
             z-index: -1;
-            box-shadow: 0 0 25px rgba(0, 242, 254, 0.35);
+            box-shadow: 0 0 28px rgba(204, 0, 0, 0.65), inset 0 0 12px rgba(139, 0, 0, 0.8);
         }
 
         @keyframes spinGradient {
@@ -249,7 +250,7 @@
             transform: translateX(100%);
         }
 
-        /* صندوق الأيقونة الملون على اليسار (مثل تصميم Beacons) */
+        /* صندوق الأيقونة الملون على اليسار */
         .icon-box {
             position: absolute;
             left: 14px;
@@ -284,12 +285,12 @@
         }
 
         /* ألوان وتدرجات المنصات الأصلية */
-        .gh-bg { background: linear-gradient(135deg, #24292e, #111315); border: 1px solid rgba(255,255,255,0.2); }
-        .x-bg  { background: #000000; border: 1px solid rgba(255,255,255,0.22); }
+        .fb-bg { background: linear-gradient(135deg, #1877F2, #0d5bc4); }
         .ig-bg { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
         .th-bg { background: #0a0a0a; border: 1px solid rgba(255,255,255,0.2); font-size: 1.65rem; }
         .tt-bg { background: #050505; border: 1px solid rgba(255,255,255,0.15); filter: drop-shadow(1.5px 1.5px 0px #ff0050) drop-shadow(-1.5px -1.5px 0px #00f2fe); }
-        .fb-bg { background: linear-gradient(135deg, #1877F2, #0d5bc4); }
+        .x-bg  { background: #000000; border: 1px solid rgba(255,255,255,0.22); }
+        .gh-bg { background: linear-gradient(135deg, #24292e, #111315); border: 1px solid rgba(255,255,255,0.2); }
         .rd-bg { background: linear-gradient(135deg, #FF4500, #e03d00); }
         .sb-bg { background: linear-gradient(135deg, #FF6719, #e0530b); }
         .wp-bg { background: linear-gradient(135deg, #FF500A, #d93d00); }
@@ -342,7 +343,7 @@
             </button>
         </div>
 
-        <!-- الصورة الشخصية المسحوبة تلقائياً من GitHub -->
+        <!-- الصورة الشخصية بالحلقة الحمراء الدموية -->
         <div class="avatar-wrapper">
             <div class="avatar-ring"></div>
             <img src="https://github.com/vnm-xii.png" alt="Vnm.xii" class="avatar">
@@ -357,66 +358,67 @@
 
         <!-- أيقونات الوصول السريع -->
         <div class="mini-icons">
-            <a href="https://github.com/vnm-xii" target="_blank" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+            <a href="https://www.facebook.com/share/1FXtpjAs37/" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+            <a href="https://www.instagram.com/vnm.xii?cplk=MWE1MHdvdmN4MHZh" target="_blank" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://www.tiktok.com/@vnm.xii?_r=1&_t=ZS-9AcUGJ5wTET" target="_blank" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
             <a href="https://x.com/vnm_xii" target="_blank" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
-            <a href="https://www.instagram.com/vnm.xii" target="_blank" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-            <a href="https://www.tiktok.com/@vnm.xii" target="_blank" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+            <a href="https://github.com/vnm-xii" target="_blank" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
         </div>
 
-        <!-- قائمة الروابط الكاملة -->
+        <!-- قائمة الروابط الكاملة بالترتيب المطلوب بالضبط -->
         <div class="links-list">
 
-            <!-- GitHub -->
-            <a href="https://github.com/vnm-xii" target="_blank" class="link-card">
-                <i class="fa-solid fa-chevron-right card-arrow"></i>
-                <span>مشاريعي على GitHub</span>
-                <div class="icon-box gh-bg"><i class="fa-brands fa-github"></i></div>
-            </a>
-
-            <!-- Facebook -->
+            <!-- 1. Facebook -->
             <a href="https://www.facebook.com/share/1FXtpjAs37/" target="_blank" class="link-card">
                 <i class="fa-solid fa-chevron-right card-arrow"></i>
                 <span>صفحتي على فيسبوك</span>
                 <div class="icon-box fb-bg"><i class="fa-brands fa-facebook-f"></i></div>
             </a>
 
-            <!-- Instagram -->
-            <a href="https://www.instagram.com/vnm.xii" target="_blank" class="link-card">
+            <!-- 2. Instagram -->
+            <a href="https://www.instagram.com/vnm.xii?cplk=MWE1MHdvdmN4MHZh" target="_blank" class="link-card">
                 <i class="fa-solid fa-chevron-right card-arrow"></i>
                 <span>حسابي على إنستغرام</span>
                 <div class="icon-box ig-bg"><i class="fa-brands fa-instagram"></i></div>
             </a>
 
-            <!-- Threads -->
+            <!-- 3. Threads -->
             <a href="https://www.threads.com/@vnm.xii" target="_blank" class="link-card">
                 <i class="fa-solid fa-chevron-right card-arrow"></i>
                 <span>مواضيعي على Threads</span>
                 <div class="icon-box th-bg"><i class="fa-brands fa-threads"></i></div>
             </a>
 
-            <!-- TikTok -->
-            <a href="https://www.tiktok.com/@vnm.xii" target="_blank" class="link-card">
+            <!-- 4. TikTok -->
+            <a href="https://www.tiktok.com/@vnm.xii?_r=1&_t=ZS-9AcUGJ5wTET" target="_blank" class="link-card">
                 <i class="fa-solid fa-chevron-right card-arrow"></i>
                 <span>حسابي على تيك توك</span>
                 <div class="icon-box tt-bg"><i class="fa-brands fa-tiktok"></i></div>
             </a>
 
-            <!-- X (Twitter) -->
+            <!-- 5. X (Twitter) -->
             <a href="https://x.com/vnm_xii" target="_blank" class="link-card">
                 <i class="fa-solid fa-chevron-right card-arrow"></i>
                 <span>حسابي على منصة X</span>
                 <div class="icon-box x-bg"><i class="fa-brands fa-x-twitter"></i></div>
             </a>
 
-            <!-- Reddit -->
+            <!-- 6. GitHub -->
+            <a href="https://github.com/vnm-xii" target="_blank" class="link-card">
+                <i class="fa-solid fa-chevron-right card-arrow"></i>
+                <span>مشاريعي على GitHub</span>
+                <div class="icon-box gh-bg"><i class="fa-brands fa-github"></i></div>
+            </a>
+
+            <!-- 7. Reddit -->
             <a href="https://www.reddit.com/u/vnm_xii/s/HTCDGlLNJa" target="_blank" class="link-card">
                 <i class="fa-solid fa-chevron-right card-arrow"></i>
                 <span>مجتمعي على Reddit</span>
                 <div class="icon-box rd-bg"><i class="fa-brands fa-reddit-alien"></i></div>
             </a>
 
-            <!-- Substack -->
-            <a href="https://substack.com/@vnmxii" target="_blank" class="link-card">
+            <!-- 8. Substack -->
+            <a href="https://substack.com/@vnmxii?utm_source=share&utm_medium=android&r=6j6rsy" target="_blank" class="link-card">
                 <i class="fa-solid fa-chevron-right card-arrow"></i>
                 <span>مقالاتي على Substack</span>
                 <div class="icon-box sb-bg">
@@ -426,7 +428,7 @@
                 </div>
             </a>
 
-            <!-- Wattpad -->
+            <!-- 9. Wattpad -->
             <a href="https://www.wattpad.com/user/vnm_xii" target="_blank" class="link-card">
                 <i class="fa-solid fa-chevron-right card-arrow"></i>
                 <span>كتاباتي على Wattpad</span>
@@ -510,5 +512,5 @@
         animate();
     </script>
 </body>
-  </html>
-  
+    </html>
+    
