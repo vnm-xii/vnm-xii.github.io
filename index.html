@@ -6,50 +6,79 @@
     <title>vnm.xii | AI Engineer</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Space+Grotesk:wght@700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
     <style>
         :root {
             --bg-obsidian: #040406;
-            --card-glass: rgba(10, 10, 14, 0.86);
-            --border-subtle: rgba(255, 255, 255, 0.09);
+            --card-glass: rgba(10, 10, 14, 0.88);
+            --border-subtle: rgba(255, 255, 255, 0.08);
             --crimson-bright: #ff002b;
             --crimson-core: #c90022;
+            --crimson-deep: #4a000d;
             --silver-pure: #f8fafc;
             --silver-metallic: #cbd5e1;
             --silver-muted: #64748b;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
             background-color: var(--bg-obsidian);
-            background-image: radial-gradient(circle at 50% 25%, #160006 0%, #040406 75%);
+            background-image: radial-gradient(circle at 50% 32%, #140005 0%, #040406 70%);
             color: var(--silver-pure);
             font-family: 'Cairo', sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 24px 18px 50px;
+            padding: 28px 18px 50px;
             position: relative;
             overflow-x: hidden;
         }
-        /* كود الخلفية واضح وحاد في كل الشاشة */
+
+        /* كود الخلفية مع عزل ذكي في المنتصف لعدم التشويش على التنين والاسم */
         #code-bg {
             position: fixed;
-            inset: 0;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: 0;
-            opacity: 0.38;
+            opacity: 0.65;
             pointer-events: none;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 11.5px;
+            font-size: 12px;
             font-weight: 700;
-            color: #ff1a40;
-            text-shadow: 0 0 6px rgba(255, 0, 43, 0.45);
-            padding: 14px;
+            color: #e60026;
+            text-shadow: 0 0 8px rgba(230, 0, 38, 0.35);
+            padding: 16px;
             overflow: hidden;
-            line-height: 1.55;
+            line-height: 1.6;
             white-space: pre-wrap;
             direction: ltr;
             text-align: left;
+            -webkit-mask-image: radial-gradient(circle at 50% 38%, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.95) 75%);
+            mask-image: radial-gradient(circle at 50% 38%, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.95) 75%);
         }
+
+        .ambient-glow {
+            position: fixed;
+            width: 340px;
+            height: 340px;
+            border-radius: 50%;
+            filter: blur(140px);
+            opacity: 0.16;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .glow-top { top: -100px; right: -80px; background: var(--crimson-core); }
+        .glow-bottom { bottom: -100px; left: -80px; background: #3b000b; }
+
         .container {
             width: 100%;
             max-width: 420px;
@@ -57,18 +86,20 @@
             z-index: 1;
             text-align: center;
         }
-        /* مجسم كلود وصندوق العبارات */
+
+        /* قسم مجسم كلود وصندوق العبارات بالثيم القرمزي والفضي المتناسق */
         .mascot-section {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             cursor: pointer;
         }
+
         .quote-box {
-            background: linear-gradient(145deg, rgba(16, 16, 22, 0.94), rgba(8, 8, 12, 0.94));
-            border: 1px solid rgba(201, 0, 34, 0.5);
-            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.85), 0 0 15px rgba(201, 0, 34, 0.15);
+            background: linear-gradient(145deg, rgba(16, 16, 22, 0.95), rgba(8, 8, 12, 0.95));
+            border: 1px solid rgba(201, 0, 34, 0.45);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.85), 0 0 15px rgba(201, 0, 34, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08);
             color: var(--silver-metallic);
             padding: 10px 16px;
             border-radius: 14px;
@@ -83,32 +114,41 @@
             justify-content: center;
             transition: opacity 0.22s ease, transform 0.22s ease;
         }
+
         .claude-pixel-svg {
-            width: 94px;
-            height: 68px;
+            width: 96px;
+            height: 70px;
             shape-rendering: crispEdges;
             filter: drop-shadow(0 6px 14px rgba(0,0,0,0.85)) drop-shadow(0 0 10px rgba(201, 0, 34, 0.25));
             animation: mascotBob 3s ease-in-out infinite;
         }
-        @keyframes mascotBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+
+        @keyframes mascotBob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+
         .steam-p1 { animation: steamRise 1.8s infinite ease-in-out; }
         .steam-p2 { animation: steamRise 1.8s infinite ease-in-out 0.6s; }
         .steam-p3 { animation: steamRise 1.8s infinite ease-in-out 1.2s; }
+
         @keyframes steamRise {
             0% { opacity: 0.2; transform: translateY(1px); }
             50% { opacity: 0.9; transform: translateY(-2px); }
             100% { opacity: 0; transform: translateY(-4px); }
         }
-        /* الصورة الشخصية بالإطار القرمزي والفضي */
+
+        /* الصورة الشخصية بالإطار القرمزي الملكي */
         .avatar-wrapper {
             position: relative;
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 12px;
+            width: 122px;
+            height: 122px;
+            margin: 0 auto 14px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
+
         .avatar-ring {
             position: absolute;
             inset: -4px;
@@ -118,23 +158,28 @@
             z-index: -1;
             box-shadow: 0 0 28px rgba(201, 0, 34, 0.65);
         }
-        @keyframes spinRing { 100% { transform: rotate(360deg); } }
+
+        @keyframes spinRing {
+            100% { transform: rotate(360deg); }
+        }
+
         .avatar {
-            width: 112px;
-            height: 112px;
+            width: 114px;
+            height: 114px;
             border-radius: 50%;
             object-fit: cover;
             border: 3px solid var(--bg-obsidian);
             filter: contrast(1.3) brightness(0.95);
             background-color: #000;
         }
-        /* الاسم بتدرج الفضة السائلة */
+
+        /* الاسم بتدرج الفضة السائلة (Liquid Silver) */
         .username {
             font-family: 'Space Grotesk', monospace;
             font-size: 1.85rem;
             font-weight: 700;
             letter-spacing: 3px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             direction: ltr;
             text-transform: lowercase;
             background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 65%, #64748b 100%);
@@ -142,90 +187,130 @@
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 2px 12px rgba(201, 0, 34, 0.45));
         }
-        /* منصة التنين الواقعي ونيران الـ Canvas والشارة */
-        .dragon-stage {
+
+        /* التنين الأسود والفضي + شارة مهندس الذكاء الاصطناعي */
+        .dragon-badge-stage {
             position: relative;
-            width: 255px;
-            height: 54px;
-            margin: 0 auto 16px;
-            display: flex;
+            height: 48px;
+            display: inline-flex;
             align-items: center;
             justify-content: flex-start;
+            margin: 0 auto 18px;
             direction: ltr;
             cursor: pointer;
+            min-width: 230px;
         }
-        .dragon-emblem {
-            width: 52px;
-            height: 52px;
+
+        .dragon-head-box {
+            width: 48px;
+            height: 46px;
             flex-shrink: 0;
             position: relative;
-            z-index: 4;
-            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.95)) drop-shadow(0 0 10px rgba(157, 78, 221, 0.35));
-            transition: transform 0.3s ease;
-        }
-        #fire-canvas {
-            position: absolute;
-            left: 38px;
-            top: -8px;
-            width: 215px;
-            height: 70px;
-            z-index: 5;
-            pointer-events: none;
-        }
-        .ai-badge {
-            position: relative;
             z-index: 3;
-            display: inline-flex;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 8px rgba(255, 0, 43, 0.35));
+        }
+
+        .dragon-right-slot {
+            position: relative;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            margin-left: -4px;
+        }
+
+        .flame-stream-svg {
+            width: 180px;
+            height: 44px;
+            overflow: visible;
+            z-index: 2;
+            filter: drop-shadow(0 0 14px rgba(255, 0, 43, 0.65));
+        }
+
+        .flame-outer {
+            animation: flameWave 0.16s infinite alternate ease-in-out;
+            transform-origin: left center;
+        }
+
+        .flame-core {
+            animation: flameWave 0.12s infinite alternate-reverse ease-in-out;
+            transform-origin: left center;
+        }
+
+        @keyframes flameWave {
+            0% { transform: scaleX(0.94) scaleY(0.92); opacity: 0.9; }
+            100% { transform: scaleX(1.06) scaleY(1.08); opacity: 1; }
+        }
+
+        /* شارة مهندس الذكاء الاصطناعي بالثيم الفضي والقرمزي */
+        .ai-badge {
+            display: none;
             align-items: center;
             gap: 8px;
             padding: 6px 16px;
-            margin-left: 6px;
-            background: linear-gradient(135deg, rgba(18, 16, 26, 0.95), rgba(8, 8, 12, 0.95));
-            border: 1px solid rgba(157, 78, 221, 0.55);
+            margin-left: 8px;
+            background: linear-gradient(135deg, rgba(18, 18, 24, 0.95), rgba(8, 8, 12, 0.95));
+            border: 1px solid rgba(201, 0, 34, 0.55);
             border-radius: 30px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.82rem;
             font-weight: 700;
             color: var(--silver-pure);
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.85), 0 0 15px rgba(123, 44, 191, 0.3);
-            opacity: 0;
-            transform: translateX(-10px) scale(0.94);
-            transition: opacity 0.5s ease, transform 0.5s ease;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.8), 0 0 15px rgba(201, 0, 34, 0.25);
+            animation: revealBadge 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-        .ai-badge.visible {
-            opacity: 1;
-            transform: translateX(0) scale(1);
+
+        .code-bracket {
+            color: var(--crimson-bright);
+            font-weight: 800;
         }
-        .code-bracket { color: var(--crimson-bright); font-weight: 800; }
+
+        @keyframes revealBadge {
+            0% { opacity: 0; transform: translateX(-8px) scale(0.95); filter: brightness(1.8); }
+            100% { opacity: 1; transform: translateX(0) scale(1); filter: brightness(1); }
+        }
+
         .pulse-dot {
             width: 7px;
             height: 7px;
-            background-color: #c77dff;
+            background-color: var(--crimson-bright);
             border-radius: 50%;
-            box-shadow: 0 0 10px #c77dff;
+            box-shadow: 0 0 10px var(--crimson-bright);
             animation: pulse 1.6s infinite;
         }
-        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.35); opacity: 0.45; } }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.35); opacity: 0.45; }
+        }
+
         /* الأيقونات الأربعة تحت الاسم */
         .mini-icons {
             display: flex;
             justify-content: center;
             gap: 26px;
-            margin-bottom: 22px;
+            margin-bottom: 24px;
         }
+
         .mini-icons a {
             color: var(--silver-muted);
             font-size: 1.38rem;
             text-decoration: none;
             transition: all 0.25s ease;
         }
+
         .mini-icons a:hover {
             color: var(--silver-pure);
             transform: translateY(-3px);
             filter: drop-shadow(0 0 10px var(--crimson-bright));
         }
-        /* بطاقات الروابط الموحدة */
-        .links-list { display: flex; flex-direction: column; gap: 12px; }
+
+        /* بطاقات الروابط الموحدة بالزجاج الأسود والفضي والقرمزي */
+        .links-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
         .link-card {
             display: flex;
             align-items: center;
@@ -240,22 +325,32 @@
             border-radius: 14px;
             border: 1px solid var(--border-subtle);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.65);
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             overflow: hidden;
         }
+
+        /* لون أسماء الروابط بتدرج فضي معدني أنيق */
         .link-title {
             font-size: 1.02rem;
             font-weight: 700;
             color: var(--silver-metallic);
-            transition: color 0.3s ease;
+            letter-spacing: 0.3px;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
         }
+
         .link-card:hover {
             transform: translateY(-3px);
             border-color: rgba(255, 0, 43, 0.5);
-            background: linear-gradient(90deg, rgba(201, 0, 34, 0.12) 0%, rgba(12, 12, 18, 0.92) 55%);
+            background: linear-gradient(90deg, rgba(201, 0, 34, 0.1) 0%, rgba(12, 12, 18, 0.92) 50%, rgba(12, 12, 18, 0.92) 100%);
             box-shadow: 0 10px 28px rgba(0, 0, 0, 0.9), 0 0 18px rgba(201, 0, 34, 0.22);
         }
-        .link-card:hover .link-title { color: #ffffff; }
+
+        .link-card:hover .link-title {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
+        }
+
+        /* توحيد جميع صناديق الأيقونات بالأسود المعدني والحواف القرمزية لمنع شذوذ الألوان */
         .icon-box {
             position: absolute;
             left: 14px;
@@ -263,7 +358,7 @@
             height: 44px;
             border-radius: 11px;
             background: linear-gradient(145deg, #121218, #07070a);
-            border: 1px solid rgba(201, 0, 34, 0.4);
+            border: 1px solid rgba(201, 0, 34, 0.38);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -272,12 +367,15 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7), inset 0 0 10px rgba(201, 0, 34, 0.12);
             transition: all 0.3s ease;
         }
+
         .link-card:hover .icon-box {
             transform: scale(1.06);
             border-color: var(--crimson-bright);
+            color: #ffffff;
             background: linear-gradient(145deg, #2b0008, #0c0003);
-            box-shadow: 0 0 16px rgba(255, 0, 43, 0.45);
+            box-shadow: 0 0 16px rgba(255, 0, 43, 0.45), inset 0 0 8px rgba(255, 0, 43, 0.3);
         }
+
         .card-arrow {
             position: absolute;
             right: 18px;
@@ -285,35 +383,42 @@
             font-size: 0.88rem;
             transition: all 0.3s ease;
         }
-        .link-card:hover .card-arrow { color: var(--crimson-bright); transform: translateX(-4px); }
+
+        .link-card:hover .card-arrow {
+            color: var(--crimson-bright);
+            transform: translateX(-4px);
+        }
+
         .footer {
             margin-top: 34px;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
+            font-size: 0.74rem;
             color: var(--silver-muted);
             direction: ltr;
-            opacity: 0.75;
+            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
 
-    <div id="code-bg">; [x86_64 ELF NASM] — DECRYPT_CONSCIOUSNESS_ROUTINE
-section .rodata
-    cipher db 0x63,0x44,0x0a,0x4b,0x0a,0x5d,0x45,0x58,0x46,0x4e,0x0a,0x45,0x4c,0x0a
-           db 0x4e,0x4f,0x5e,0x4f,0x58,0x47,0x43,0x44,0x43,0x59,0x5e,0x43,0x49,0x0a
-           db 0x4b,0x5f,0x5e,0x45,0x47,0x4b,0x5e,0x4b,0x06,0x0a,0x5e,0x42,0x4f,0x0a</div>
+    <!-- خلفية الكود المشفر للمحترفين -->
+    <div id="code-bg"></div>
+    <div class="ambient-glow glow-top"></div>
+    <div class="ambient-glow glow-bottom"></div>
 
     <div class="container">
-        <!-- مجسم كلود وصندوق العبارات -->
-        <div class="mascot-section" onclick="nextHumanQuote()">
+
+        <!-- مجسم كلود (نسخة الكريمسون والفضة المظلمة) + العبارات العشر -->
+        <div class="mascot-section" onclick="nextHumanQuote()" title="اضغط لرسالة جديدة">
             <div class="quote-box" id="human-quote">
                 أهلاً بيك.. بما إنك وصلت لهنا، فإنت غالباً شخص فضولي ودمك خفيف، خد راحتك الكوكب كوكبك ☕
             </div>
             <svg class="claude-pixel-svg" viewBox="0 0 38 26">
+                <!-- بخار القهوة الفضي -->
                 <rect class="steam-p1" x="5" y="6" width="1.5" height="1.5" fill="#cbd5e1"/>
                 <rect class="steam-p2" x="7" y="7.5" width="1.5" height="1.5" fill="#94a3b8"/>
                 <rect class="steam-p3" x="5" y="9" width="1.5" height="1.5" fill="#cbd5e1"/>
+                <!-- جسم مجسم كلود باللون القرمزي الداكن والياقوتي المتناسق -->
                 <rect x="10" y="6" width="2" height="14" fill="#6b0013"/>
                 <rect x="11" y="5" width="14" height="1" fill="#6b0013"/>
                 <rect x="12" y="6" width="15" height="14" fill="#b8001f"/>
@@ -323,17 +428,20 @@ section .rodata
                 <rect x="14" y="20" width="2.5" height="4" fill="#b8001f"/>
                 <rect x="17.5" y="20" width="2" height="3" fill="#6b0013"/>
                 <rect x="19.5" y="20" width="2.5" height="4" fill="#b8001f"/>
+                <!-- العيون الفضية الناصعة -->
                 <rect x="14.5" y="10" width="2.5" height="1.2" fill="#f8fafc"/>
                 <rect x="13.5" y="11.2" width="1.2" height="1.2" fill="#f8fafc"/>
                 <rect x="17" y="11.2" width="1.2" height="1.2" fill="#f8fafc"/>
                 <rect x="21.5" y="10" width="2.5" height="1.2" fill="#f8fafc"/>
                 <rect x="20.5" y="11.2" width="1.2" height="1.2" fill="#f8fafc"/>
                 <rect x="24" y="11.2" width="1.2" height="1.2" fill="#f8fafc"/>
+                <!-- كوب القهوة الأسود المطفي بحواف فضية -->
                 <rect x="3" y="12" width="6" height="7" fill="#1e293b"/>
                 <rect x="3" y="12" width="1.2" height="7" fill="#0f172a"/>
                 <rect x="4" y="19" width="4" height="1" fill="#334155"/>
                 <rect x="4" y="12.5" width="4" height="1.5" fill="#450a0a"/>
                 <rect x="9" y="13.5" width="1.2" height="3" fill="#334155"/>
+                <!-- اللاب توب الأسود بشعار أحمر متوهج -->
                 <polygon points="22,17 33,17 31,24 20,24" fill="#09090d"/>
                 <rect x="22" y="16.2" width="11" height="1" fill="#475569"/>
                 <rect x="18" y="23" width="13" height="1.3" fill="#020204"/>
@@ -344,53 +452,92 @@ section .rodata
             </svg>
         </div>
 
-        <!-- الصورة الشخصية -->
+        <!-- الصورة الشخصية بالإطار القرمزي والفضي -->
         <div class="avatar-wrapper">
             <div class="avatar-ring"></div>
             <img src="https://github.com/vnm-xii.png" alt="vnm.xii" class="avatar">
         </div>
 
-        <!-- الاسم -->
+        <!-- الاسم بتدرج الفضة السائلة -->
         <h1 class="username">vnm.xii</h1>
 
-        <!-- التنين المدرع الحاد على اليسار + نيران فيزيائية بنفسجية غامقة من الشمال لليمين + شارة AI Engineer -->
-        <div class="dragon-stage" onclick="igniteDragonFire()" title="اضغط لإطلاق اللهب">
-            <svg class="dragon-emblem" viewBox="0 0 64 64">
+        <!-- التنين الأسود والفضي: ينفخ اللهب من الشمال لليمين ثم يظهر اللقب -->
+        <div class="dragon-badge-stage" onclick="triggerDragonSequence()" title="اضغط لإطلاق لهب التنين">
+            <svg class="dragon-head-box" viewBox="0 0 60 56">
                 <defs>
-                    <linearGradient id="dHorn" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <linearGradient id="hornSilver" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" stop-color="#f8fafc"/>
-                        <stop offset="50%" stop-color="#94a3b8"/>
-                        <stop offset="100%" stop-color="#1e1b2e"/>
+                        <stop offset="55%" stop-color="#94a3b8"/>
+                        <stop offset="100%" stop-color="#1e293b"/>
                     </linearGradient>
-                    <linearGradient id="dScale" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stop-color="#1a1a24"/>
-                        <stop offset="100%" stop-color="#050508"/>
+                    <linearGradient id="armorObsidian" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#1e1e26"/>
+                        <stop offset="100%" stop-color="#07070a"/>
                     </linearGradient>
                 </defs>
-                <path d="M16,36 L2,14 L11,22 L6,8 L20,24 Z" fill="#0b0b12" stroke="#5a189a" stroke-width="1"/>
-                <path d="M48,36 L62,14 L53,22 L58,8 L44,24 Z" fill="#0b0b12" stroke="#5a189a" stroke-width="1"/>
-                <path d="M22,20 L8,2 L18,6 L27,16 Z" fill="url(#dHorn)"/>
-                <path d="M42,20 L56,2 L46,6 L37,16 Z" fill="url(#dHorn)"/>
-                <polygon points="17,28 8,25 16,34 10,37 19,40" fill="#7b2cbf"/>
-                <polygon points="47,28 56,25 48,34 54,37 45,40" fill="#7b2cbf"/>
-                <polygon points="32,10 43,19 46,33 39,49 32,56 25,49 18,33 21,19" fill="url(#dScale)" stroke="#cbd5e1" stroke-width="1.1"/>
-                <polygon points="32,14 36,26 32,46 28,26" fill="#0e0e17" stroke="#7b2cbf" stroke-width="0.8"/>
-                <polygon id="dragon-jaw-glow" points="26,48 32,59 38,48 32,52" fill="#c77dff" opacity="0"/>
-                <g id="dragon-stare-eyes">
-                    <polygon points="20,27 29,32 22,34" fill="#ff002b"/>
-                    <polygon points="23.5,29 25,32 23.5,33" fill="#ffffff"/>
-                    <polygon points="44,27 35,32 42,34" fill="#ff002b"/>
-                    <polygon points="40.5,29 39,32 40.5,33" fill="#ffffff"/>
+
+                <!-- وضعية 1: التنين ينفخ اللهب من الشمال لليمين -->
+                <g id="dragon-side-profile">
+                    <path d="M 24,16 C 14,10 6,6 2,3 C 8,10 14,16 20,21 Z" fill="url(#hornSilver)"/>
+                    <path d="M 28,13 C 20,6 13,2 7,1 C 13,7 19,13 24,18 Z" fill="url(#hornSilver)"/>
+                    <path d="M 16,24 L 8,22 L 14,28 L 7,29 L 13,34 L 16,42" fill="#99001a"/>
+                    <path d="M 14,46 C 14,34 16,24 22,17 C 28,12 37,12 45,15 L 56,19 L 47,23 L 52,25 L 40,26 L 40,31 L 53,35 L 45,39 C 36,39 29,36 26,46 Z" fill="url(#armorObsidian)" stroke="#cbd5e1" stroke-width="0.9"/>
+                    <polygon points="48,22 50,26 52,22" fill="#f8fafc"/>
+                    <polygon points="47,34 49,30 51,34" fill="#f8fafc"/>
+                    <path d="M 38,25 L 50,24 L 48,33 L 38,31 Z" fill="#ff002b" opacity="0.85"/>
+                    <path d="M 33,18 L 41,20 L 36,22 Z" fill="#ff002b"/>
+                    <circle cx="37" cy="20" r="1" fill="#ffffff"/>
                 </g>
-                <polygon points="29,48 31,51 28,51" fill="#c77dff"/>
-                <polygon points="35,48 33,51 36,51" fill="#c77dff"/>
+
+                <!-- وضعية 2: التنين يلتفت للأمام بحواف فضية وعيون حمراء واضحة -->
+                <g id="dragon-front-stare" style="display: none;">
+                    <path d="M 18,32 C 8,22 3,18 2,12 C 4,24 7,36 14,46 Z" fill="#0c0c12" stroke="#64748b" stroke-width="0.9"/>
+                    <path d="M 42,32 C 52,22 57,18 58,12 C 56,24 53,36 46,46 Z" fill="#0c0c12" stroke="#64748b" stroke-width="0.9"/>
+                    <path d="M 21,18 C 14,11 9,5 8,1 C 13,5 19,10 25,16 Z" fill="url(#hornSilver)"/>
+                    <path d="M 39,18 C 46,11 51,5 52,1 C 47,5 41,10 35,16 Z" fill="url(#hornSilver)"/>
+                    <path d="M 18,24 L 10,20 L 17,28 Z" fill="#c90022"/>
+                    <path d="M 42,24 L 50,20 L 43,28 Z" fill="#c90022"/>
+                    <path d="M 25,14 L 30,9 L 35,14 L 42,22 L 40,36 L 34,46 L 26,46 L 20,36 L 18,22 Z" fill="url(#armorObsidian)" stroke="#cbd5e1" stroke-width="1.1"/>
+                    <path d="M 27,26 L 30,42 L 33,26" fill="none" stroke="#64748b" stroke-width="1"/>
+                    <circle cx="27.5" cy="41" r="1.3" fill="#ff002b"/>
+                    <circle cx="32.5" cy="41" r="1.3" fill="#ff002b"/>
+                    <g id="dragon-stare-eyes">
+                        <polygon points="21,26 28,29 23,31" fill="#ff002b"/>
+                        <polygon points="24,27 25.5,29 24,30.5" fill="#ffffff"/>
+                        <polygon points="39,26 32,29 37,31" fill="#ff002b"/>
+                        <polygon points="36,27 34.5,29 36,30.5" fill="#ffffff"/>
+                    </g>
+                </g>
             </svg>
 
-            <canvas id="fire-canvas" width="215" height="70"></canvas>
+            <div class="dragon-right-slot">
+                <svg class="flame-stream-svg" id="flame-stream" viewBox="0 0 180 44">
+                    <defs>
+                        <linearGradient id="crimsonDarkFire" x1="0%" y1="50%" x2="100%" y2="50%">
+                            <stop offset="0%" stop-color="#ffffff"/>
+                            <stop offset="22%" stop-color="#ff002b"/>
+                            <stop offset="60%" stop-color="#99001a"/>
+                            <stop offset="90%" stop-color="#3b000b"/>
+                            <stop offset="100%" stop-color="#140004" stop-opacity="0"/>
+                        </linearGradient>
+                        <linearGradient id="silverCoreFire" x1="0%" y1="50%" x2="100%" y2="50%">
+                            <stop offset="0%" stop-color="#ffffff"/>
+                            <stop offset="40%" stop-color="#ff4d6d"/>
+                            <stop offset="85%" stop-color="#800016"/>
+                            <stop offset="100%" stop-color="#2b0007" stop-opacity="0"/>
+                        </linearGradient>
+                    </defs>
+                    <path class="flame-outer" d="M 0,20 C 25,6 60,2 105,8 C 135,12 160,6 178,14 C 155,22 170,28 145,33 C 105,40 50,38 0,25 Z" fill="url(#crimsonDarkFire)"/>
+                    <path class="flame-core" d="M 0,21 C 30,12 70,11 125,18 C 100,26 55,30 0,24 Z" fill="url(#silverCoreFire)"/>
+                    <circle cx="145" cy="12" r="2.2" fill="#ff002b"/>
+                    <circle cx="162" cy="24" r="1.8" fill="#f8fafc"/>
+                    <circle cx="128" cy="34" r="2" fill="#99001a"/>
+                </svg>
 
-            <div class="ai-badge" id="ai-badge">
-                <span class="pulse-dot"></span>
-                <span><span class="code-bracket">&lt;</span>AI Engineer <span class="code-bracket">/&gt;</span></span>
+                <div class="ai-badge" id="ai-badge">
+                    <span class="pulse-dot"></span>
+                    <span><span class="code-bracket">&lt;</span>AI Engineer <span class="code-bracket">/&gt;</span></span>
+                </div>
             </div>
         </div>
 
@@ -402,66 +549,89 @@ section .rodata
             <a href="https://www.facebook.com/share/1FXtpjAs37/" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
         </div>
 
-        <!-- قائمة الروابط الـ 9 كاملة بالترتيب المطلوب -->
+        <!-- قائمة الروابط الكاملة بالثيم الموحد -->
         <div class="links-list">
+
+            <!-- 1. Facebook -->
             <a href="https://www.facebook.com/share/1FXtpjAs37/" target="_blank" class="link-card">
                 <i class="fa-solid fa-chevron-right card-arrow"></i>
                 <span class="link-title">صفحتي على فيسبوك</span>
                 <div class="icon-box"><i class="fa-brands fa-facebook-f"></i></div>
             </a>
+
+            <!-- 2. Instagram -->
             <a href="https://www.instagram.com/vnm.xii?cplk=MWE1MHdvdmN4MHZh" target="_blank" class="link-card">
                 <i class="fa-solid fa-chevron-right card-arrow"></i>
                 <span class="link-title">حسابي على إنستغرام</span>
                 <div class="icon-box"><i class="fa-brands fa-instagram"></i></div>
             </a>
+
+            <!-- 3. Threads -->
             <a href="https://www.threads.com/@vnm.xii" target="_blank" class="link-card">
                 <i class="fa-solid fa-chevron-right card-arrow"></i>
                 <span class="link-title">مواضيعي على Threads</span>
                 <div class="icon-box"><i class="fa-brands fa-threads"></i></div>
             </a>
+
+            <!-- 4. TikTok -->
             <a href="https://www.tiktok.com/@vnm.xii?_r=1&_t=ZS-9AcUGJ5wTET" target="_blank" class="link-card">
                 <i class="fa-solid fa-chevron-right card-arrow"></i>
                 <span class="link-title">حسابي على تيك توك</span>
                 <div class="icon-box"><i class="fa-brands fa-tiktok"></i></div>
             </a>
+
+            <!-- 5. X -->
             <a href="https://x.com/vnm_xii" target="_blank" class="link-card">
                 <i class="fa-solid fa-chevron-right card-arrow"></i>
                 <span class="link-title">حسابي على منصة X</span>
                 <div class="icon-box"><i class="fa-brands fa-x-twitter"></i></div>
             </a>
+
+            <!-- 6. GitHub -->
             <a href="https://github.com/vnm-xii" target="_blank" class="link-card">
                 <i class="fa-solid fa-chevron-right card-arrow"></i>
                 <span class="link-title">مشاريعي على GitHub</span>
                 <div class="icon-box"><i class="fa-brands fa-github"></i></div>
             </a>
+
+            <!-- 7. Reddit -->
             <a href="https://www.reddit.com/u/vnm_xii/s/HTCDGlLNJa" target="_blank" class="link-card">
                 <i class="fa-solid fa-chevron-right card-arrow"></i>
                 <span class="link-title">مجتمعي على Reddit</span>
                 <div class="icon-box"><i class="fa-brands fa-reddit-alien"></i></div>
             </a>
+
+            <!-- 8. Substack -->
             <a href="https://substack.com/@vnmxii?utm_source=share&utm_medium=android&r=6j6rsy" target="_blank" class="link-card">
                 <i class="fa-solid fa-chevron-right card-arrow"></i>
                 <span class="link-title">مقالاتي على Substack</span>
                 <div class="icon-box">
-                    <svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/></svg>
+                    <svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor">
+                        <path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/>
+                    </svg>
                 </div>
             </a>
+
+            <!-- 9. Wattpad -->
             <a href="https://www.wattpad.com/user/vnm_xii" target="_blank" class="link-card">
                 <i class="fa-solid fa-chevron-right card-arrow"></i>
                 <span class="link-title">كتاباتي على Wattpad</span>
                 <div class="icon-box">
-                    <svg viewBox="0 0 24 24" width="21" height="21" fill="currentColor"><path d="M19.047 18.257c-1.583 0-2.618-1.071-3.328-2.923l-1.572-4.101-1.571 4.101c-.71 1.852-1.745 2.923-3.329 2.923-1.99 0-3.398-1.63-4.155-4.81L3.03 4.808c-.21-.896.326-1.688 1.222-1.898.896-.21 1.688.326 1.898 1.222l1.84 7.822c.314 1.34.721 2.025 1.257 2.025.43 0 .826-.466 1.152-1.316l2.316-6.04c.291-.757.885-1.187 1.432-1.187.547 0 1.141.43 1.432 1.187l2.316 6.04c.326.85.722 1.316 1.152 1.316.536 0 .943-.685 1.257-2.025l1.84-7.822c.21-.896 1.002-1.432 1.898-1.222.896.21 1.432 1.002 1.222 1.898l-2.062 8.639c-.757 3.18-2.165 4.81-4.155 4.81z"/></svg>
+                    <svg viewBox="0 0 24 24" width="21" height="21" fill="currentColor">
+                        <path d="M19.047 18.257c-1.583 0-2.618-1.071-3.328-2.923l-1.572-4.101-1.571 4.101c-.71 1.852-1.745 2.923-3.329 2.923-1.99 0-3.398-1.63-4.155-4.81L3.03 4.808c-.21-.896.326-1.688 1.222-1.898.896-.21 1.688.326 1.898 1.222l1.84 7.822c.314 1.34.721 2.025 1.257 2.025.43 0 .826-.466 1.152-1.316l2.316-6.04c.291-.757.885-1.187 1.432-1.187.547 0 1.141.43 1.432 1.187l2.316 6.04c.326.85.722 1.316 1.152 1.316.536 0 .943-.685 1.257-2.025l1.84-7.822c.21-.896 1.002-1.432 1.898-1.222.896.21 1.432 1.002 1.222 1.898l-2.062 8.639c-.757 3.18-2.165 4.81-4.155 4.81z"/>
+                    </svg>
                 </div>
             </a>
+
         </div>
 
         <div class="footer">
-            Engineered by @vnm.xii • Powered by AI
+            crafted by vnm.xii
         </div>
     </div>
 
     <script>
-        /* العبارات العشر */
+        /* العشر عبارات البشرية كما هي */
         const humanQuotes = [
             "أهلاً بيك.. بما إنك وصلت لهنا، فإنت غالباً شخص فضولي ودمك خفيف، خد راحتك الكوكب كوكبك ☕",
             "بص.. أنا جمعت لك كل حساباتي هنا عشان أوفر عليك عناء البحث عني، اختار اللي يعجبك ودوس!",
@@ -474,80 +644,46 @@ section .rodata
             "سيبك من الرسميات.. كل رابط هنا وراه جانب مختلف من دماغي، شوف أنهي جانب يشبهك أكتر!",
             "لسه بتقرأ الرسايل؟ طب والله إنك رايق.. يلا انزل شوف الروابط قبل ما التنين اللي تحت يزهق مننا 😂"
         ];
+
         let qIndex = 0;
         function nextHumanQuote() {
             qIndex = (qIndex + 1) % humanQuotes.length;
             const box = document.getElementById('human-quote');
             box.style.opacity = '0';
-            setTimeout(() => { box.textContent = humanQuotes[qIndex]; box.style.opacity = '1'; }, 200);
+            box.style.transform = 'translateY(3px)';
+            setTimeout(() => {
+                box.textContent = humanQuotes[qIndex];
+                box.style.opacity = '1';
+                box.style.transform = 'translateY(0)';
+            }, 200);
         }
         setInterval(nextHumanQuote, 5000);
 
-        /* محرك الفيزياء الواقعي لنيران التنين البنفسجية الداكنة من الشمال لليمين */
-        const fCanvas = document.getElementById('fire-canvas');
-        const fCtx = fCanvas.getContext('2d');
-        let particles = [];
-        let emitting = false;
-        let animId = null;
+        /* حركة التنين من الشمال لليمين ثم ظهور <AI Engineer /> */
+        let dragonTimer;
+        function triggerDragonSequence() {
+            const sideProfile = document.getElementById('dragon-side-profile');
+            const frontStare = document.getElementById('dragon-front-stare');
+            const flameStream = document.getElementById('flame-stream');
+            const aiBadge = document.getElementById('ai-badge');
 
-        function spawnFireParticles() {
-            for (let i = 0; i < 7; i++) {
-                particles.push({
-                    x: 6,
-                    y: 36 + (Math.random() - 0.5) * 6,
-                    vx: 3.5 + Math.random() * 4.5,
-                    vy: (Math.random() - 0.5) * 1.8,
-                    r: 6 + Math.random() * 9,
-                    life: 1,
-                    decay: 0.022 + Math.random() * 0.02,
-                    hue: Math.random() > 0.35 ? 275 : 345
-                });
-            }
+            clearTimeout(dragonTimer);
+            frontStare.style.display = 'none';
+            aiBadge.style.display = 'none';
+
+            sideProfile.style.display = 'block';
+            flameStream.style.display = 'block';
+
+            dragonTimer = setTimeout(() => {
+                sideProfile.style.display = 'none';
+                flameStream.style.display = 'none';
+                frontStare.style.display = 'block';
+                aiBadge.style.display = 'inline-flex';
+            }, 2300);
         }
+        window.addEventListener('DOMContentLoaded', triggerDragonSequence);
 
-        function renderFire() {
-            fCtx.clearRect(0, 0, fCanvas.width, fCanvas.height);
-            if (emitting) spawnFireParticles();
-            for (let i = particles.length - 1; i >= 0; i--) {
-                const p = particles[i];
-                p.x += p.vx;
-                p.y += p.vy;
-                p.r *= 0.97;
-                p.life -= p.decay;
-                if (p.life <= 0) { particles.splice(i, 1); continue; }
-                const grad = fCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-                grad.addColorStop(0, `hsla(${p.hue}, 100%, 75%, ${p.life})`);
-                grad.addColorStop(0.5, `hsla(${p.hue}, 95%, 38%, ${p.life * 0.8})`);
-                grad.addColorStop(1, `hsla(270, 100%, 10%, 0)`);
-                fCtx.fillStyle = grad;
-                fCtx.beginPath();
-                fCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                fCtx.fill();
-            }
-            if (emitting || particles.length > 0) {
-                animId = requestAnimationFrame(renderFire);
-            }
-        }
-
-        function igniteDragonFire() {
-            const badge = document.getElementById('ai-badge');
-            const jawGlow = document.getElementById('dragon-jaw-glow');
-            badge.classList.remove('visible');
-            jawGlow.setAttribute('opacity', '0.95');
-            emitting = true;
-            cancelAnimationFrame(animId);
-            renderFire();
-            setTimeout(() => {
-                badge.classList.add('visible');
-            }, 900);
-            setTimeout(() => {
-                emitting = false;
-                jawGlow.setAttribute('opacity', '0');
-            }, 1900);
-        }
-        window.addEventListener('DOMContentLoaded', igniteDragonFire);
-
-        /* رمش عيون التنين وهو يراقب المستخدم */
+        /* رمش عيون التنين */
         setInterval(() => {
             const eyes = document.getElementById('dragon-stare-eyes');
             if (eyes) {
@@ -593,15 +729,16 @@ unsafe fn transcend_syntax(ptr: *const u8, len: usize) -> &'static str {
     let slice = core::slice::from_raw_parts(ptr, len);
     core::str::from_utf8_unchecked(slice) // "vnm.xii: Look beyond the code."
 }`;
+
         const codeBg = document.getElementById('code-bg');
-        let charIdx = 120;
+        let charIdx = 0;
         function typeBackgroundCode() {
             if (charIdx <= deepCode.length) {
                 codeBg.textContent = deepCode.slice(0, charIdx) + (charIdx % 2 === 0 ? "█" : "");
                 charIdx += 4;
                 setTimeout(typeBackgroundCode, 30);
             } else {
-                setTimeout(() => { charIdx = 120; typeBackgroundCode(); }, 7000);
+                setTimeout(() => { charIdx = 0; typeBackgroundCode(); }, 7000);
             }
         }
         typeBackgroundCode();
