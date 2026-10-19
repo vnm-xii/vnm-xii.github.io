@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday My Love ✨</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Dancing+Script:wght@700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: radial-gradient(circle at bottom, #1b1947 0%, #090a10 100%);
+      color: #fff;
+      font-family: 'Cairo', sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    canvas#stars {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .stage {
+      position: relative;
+      z-index: 10;
+      width: 90%;
+      max-width: 500px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 1s ease forwards;
+    }
+    .stage.active { display: flex; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* المرحلة الأولى: القلب المضيء */
+    .heart-btn {
+      font-size: 90px;
+      cursor: pointer;
+      filter: drop-shadow(0 0 25px #ff2a7a);
+      animation: pulse 1.2s infinite;
+      user-select: none;
+      transition: transform 0.3s;
+    }
+    .heart-btn:hover { transform: scale(1.15); }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.18); }
+    }
+    .hint-text {
+      margin-top: 20px;
+      font-size: 1.3rem;
+      color: #ffb3d1;
+      text-shadow: 0 0 10px #ff2a7a;
+    }
+
+    /* المرحلة الثانية: التورتة والشموع */
+    .cake-container {
+      position: relative;
+      margin-top: 40px;
+      cursor: pointer;
+    }
+    .cake {
+      width: 220px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .layer {
+      background: linear-gradient(to right, #ff7eb3, #ff758c);
+      border-radius: 12px 12px 4px 4px;
+      box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4);
+      position: relative;
+      opacity: 0;
+      transform: translateY(-80px);
+      animation: dropLayer 0.6s forwards;
+    }
+    .layer::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 12px;
+      background: #fff0f5;
+      border-radius: 12px 12px 6px 6px;
+    }
+    .layer-1 { width: 140px; height: 45px; animation-delay: 0.8s; }
+    .layer-2 { width: 180px; height: 55px; animation-delay: 0.4s; }
+    .layer-3 { width: 220px; height: 65px; animation-delay: 0.1s; }
+
+    @keyframes dropLayer {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .candles {
+      display: flex;
+      gap: 18px;
+      margin-bottom: -5px;
+      z-index: 5;
+      opacity: 0;
+      animation: fadeIn 0.8s 1.4s forwards;
+    }
+    .candle {
+      width: 10px;
+      height: 35px;
+      background: repeating-linear-gradient(45deg, #fff, #fff 4px, #ff2a7a 4px, #ff2a7a 8px);
+      border-radius: 3px;
+      position: relative;
+    }
+    .flame {
+      width: 14px;
+      height: 22px;
+      background: radial-gradient(circle, #fff 10%, #ffeb3b 50%, #ff9800 90%);
+      border-radius: 50% 50% 35% 35%;
+      position: absolute;
+      top: -24px;
+      left: -2px;
+      box-shadow: 0 0 18px #ffeb3b, 0 0 35px #ff9800;
+      animation: flicker 0.15s infinite alternate;
+      transition: opacity 0.4s, transform 0.4s;
+    }
+    .flame.out {
+      opacity: 0;
+      transform: scale(0) translateY(-10px);
+    }
+    @keyframes flicker {
+      from { transform: rotate(-3deg) scale(0.95); }
+      to { transform: rotate(3deg) scale(1.05); }
+    }
+
+    .blow-instruction {
+      margin-top: 25px;
+      font-size: 1.2rem;
+      background: rgba(255,255,255,0.1);
+      padding: 10px 22px;
+      border-radius: 30px;
+      border: 1px solid rgba(255, 182, 193, 0.4);
+    }
+
+    /* المرحلة الثالثة: الوردة السحرية والرسالة */
+    .glass-dome {
+      width: 150px;
+      height: 210px;
+      border: 3px solid rgba(255, 255, 255, 0.35);
+      border-bottom: 8px solid #3a2e39;
+      border-radius: 75px 75px 10px 10px;
+      position: relative;
+      background: radial-gradient(circle at center, rgba(255, 42, 122, 0.25), rgba(255,255,255,0.03));
+      box-shadow: 0 0 40px rgba(255, 42, 122, 0.45), inset 0 0 20px rgba(255, 255, 255, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      margin-bottom: 20px;
+    }
+    .rose-stem {
+      width: 5px;
+      height: 95px;
+      background: #1b7a43;
+      position: relative;
+    }
+    .rose-flower {
+      width: 44px;
+      height: 44px;
+      background: radial-gradient(circle, #ff7eb3, #d81b60);
+      border-radius: 50% 50% 40% 40%;
+      position: absolute;
+      top: -35px;
+      left: -20px;
+      box-shadow: 0 0 25px #ff2a7a;
+      animation: glowRose 2s infinite alternate;
+    }
+    @keyframes glowRose {
+      from { box-shadow: 0 0 15px #ff2a7a; }
+      to { box-shadow: 0 0 35px #ff7eb3; }
+    }
+    .title-en {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.8rem;
+      color: #ff7eb3;
+      text-shadow: 0 0 15px #ff2a7a;
+      margin-bottom: 10px;
+    }
+    .message-box {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 1.15rem;
+      line-height: 1.8;
+      color: #fce4ec;
+      min-height: 120px;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="stars"></canvas>
+
+  <!-- المرحلة 1: البداية -->
+  <div class="stage active" id="stage1">
+    <div class="heart-btn" onclick="goToCake()">💘</div>
+    <p class="hint-text">اضغطي على القلب عشان تبدأ مفاجأة عيد ميلادك ✨</p>
+  </div>
+
+  <!-- المرحلة 2: التورتة -->
+  <div class="stage" id="stage2">
+    <h2 style="color:#ffb3d1; margin-bottom:10px;">اتمني أمنية حلوة زيك.. 🎂</h2>
+    <div class="cake-container" onclick="blowCandles()">
+      <div class="cake">
+        <div class="candles">
+          <div class="candle"><div class="flame"></div></div>
+          <div class="candle"><div class="flame"></div></div>
+          <div class="candle"><div class="flame"></div></div>
+        </div>
+        <div class="layer layer-1"></div>
+        <div class="layer layer-2"></div>
+        <div class="layer layer-3"></div>
+      </div>
+    </div>
+    <div class="blow-instruction">
+      🎤 انفخي في الموبايل أو المايك (أو المسى الشموع) عشان تطفيها!
+    </div>
+  </div>
+
+  <!-- المرحلة 3: الوردة والرسالة -->
+  <div class="stage" id="stage3">
+    <div class="glass-dome">
+      <div class="rose-stem">
+        <div class="rose-flower"></div>
+      </div>
+    </div>
+    <div class="title-en">Happy Birthday My Love</div>
+    <div class="message-box" id="typewriter"></div>
+  </div>
+
+  <script>
+    // ======== عدّل الرسالة والاسم من هنا ========
+    const birthdayMessage = "كل سنة وأنتِ أجمل صدفة وأحلى نعمة في حياتي.. يوم ميلادك مش بس يوم عادي، ده اليوم اللي الدنيا نورت فيه بوجودك. عقبال مليون سنة وإحنا سوا وقلبك منور حياتي! ❤️✨";
+
+    // خلفية النجوم والقلوب المتطايرة
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particles = Array.from({ length: 80 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 2 + 0.5,
+      dy: Math.random() * 0.6 + 0.2,
+      color: Math.random() > 0.2 ? '#ffffff' : '#ff7eb3'
+    }));
+
+    function animateStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        p.y -= p.dy;
+        if (p.y < 0) p.y = canvas.height;
+      });
+      requestAnimationFrame(animateStars);
+    }
+    animateStars();
+
+    function goToCake() {
+      document.getElementById('stage1').classList.remove('active');
+      document.getElementById('stage2').classList.add('active');
+      initMicBlow();
+    }
+
+    let candlesBlown = false;
+    function blowCandles() {
+      if (candlesBlown) return;
+      candlesBlown = true;
+      document.querySelectorAll('.flame').forEach(f => f.classList.add('out'));
+      setTimeout(() => {
+        document.getElementById('stage2').classList.remove('active');
+        document.getElementById('stage3').classList.add('active');
+        startTypewriter();
+      }, 1000);
+    }
+
+    // تشغيل المايكروفون عشان لما تنفخ الشموع تطفي
+    function initMicBlow() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioCtx.createMediaStreamSource(stream);
+        const analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 256;
+        source.connect(analyser);
+        const data = new Uint8Array(analyser.frequencyBinCount);
+
+        function checkVolume() {
+          if (candlesBlown) return;
+          analyser.getByteFrequencyData(data);
+          let avg = data.reduce((a, b) => a + b, 0) / data.length;
+          if (avg > 55) { // لو نفخت في المايك
+            blowCandles();
+            stream.getTracks().forEach(t => t.stop());
+          } else {
+            requestAnimationFrame(checkVolume);
+          }
+        }
+        checkVolume();
+      }).catch(() => {});
+    }
+
+    function startTypewriter() {
+      const box = document.getElementById('typewriter');
+      let i = 0;
+      function type() {
+        if (i < birthdayMessage.length) {
+          box.innerHTML += birthdayMessage.charAt(i);
+          i++;
+          setTimeout(type, 55);
+        }
+      }
+      type();
+    }
+  </script>
+</body>
+  </html>
+  
