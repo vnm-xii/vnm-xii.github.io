@@ -3,11 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Haneen ✨</title>
+  <title>Haneen | تجربة تفاعلية خاصة ✨</title>
+  <!-- المكتبات الأساسية: Three.js للثري دي + GSAP للتحريك الفيزيائي + Confetti للاحتفال -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Dancing+Script:wght@700&family=Share+Tech+Mono&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Playfair+Display:ital,wght@0,700;1,700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+    :root {
+      --bg-deep: #04040a;
+      --crimson: #ff1e56;
+      --rose-glow: #f594b8;
+      --rose-core: #d52d58;
+      --cyan: #00f2fe;
+      --gold: #ffd166;
+    }
 
     * {
       margin: 0; padding: 0; box-sizing: border-box;
@@ -18,779 +29,608 @@
     html, body {
       width: 100%; height: 100%;
       overflow: hidden;
-      background: #040409;
+      background-color: var(--bg-deep);
       color: #fff;
       font-family: 'Tajawal', sans-serif;
       touch-action: none;
     }
 
-    /* الكانفاس الرئيسي (واخد الشاشة كلها ومفيش أي طبقة بتحجبه) */
-    canvas#mainCanvas {
+    /* خلفية الفضاء والقلب ثلاثي الأبعاد */
+    #webglContainer {
       position: fixed;
       inset: 0;
       width: 100%; height: 100%;
       z-index: 1;
-      display: block;
     }
 
-    /* هيدر عائم بسيط جداً بدون صناديق */
-    .minimal-hud {
+    /* الشريط العلوي السينمائي */
+    .hud-top {
       position: fixed;
-      top: 22px; left: 22px; right: 22px;
-      z-index: 50;
+      top: 18px; left: 20px; right: 20px;
+      z-index: 100;
       display: flex;
       justify-content: space-between;
       align-items: center;
       pointer-events: none;
     }
-    .hud-tag {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.8rem;
-      color: #ff4d79;
-      letter-spacing: 2px;
-      text-shadow: 0 0 10px #ff4d79;
-    }
-    .music-pill {
+
+    .hud-pill {
       pointer-events: auto;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      color: #fff;
-      padding: 6px 15px;
+      background: rgba(8, 10, 22, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(12px);
+      padding: 7px 15px;
       border-radius: 30px;
-      font-family: 'Tajawal', sans-serif;
-      font-size: 0.82rem;
-      cursor: pointer;
-      backdrop-filter: blur(8px);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     }
 
-    /* نصوص سينمائية عائمة بدون صناديق */
-    .floating-caption {
-      position: fixed;
-      top: 72px; left: 0; right: 0;
-      text-align: center;
-      z-index: 20;
-      pointer-events: none;
-      padding: 0 20px;
+    .pulse-led {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--crimson);
+      box-shadow: 0 0 10px var(--crimson);
+      animation: ledBlink 0.9s infinite alternate;
     }
-    .floating-caption h1 {
+    @keyframes ledBlink { to { opacity: 0.25; transform: scale(0.75); } }
+
+    .step-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .step-dot {
+      width: 18px; height: 4px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.18);
+      transition: all 0.5s ease;
+    }
+    .step-dot.active {
+      width: 34px;
+      background: linear-gradient(90deg, var(--cyan), var(--crimson));
+      box-shadow: 0 0 10px var(--crimson);
+    }
+
+    /* عناوين المشاهد العائمة في الأعلى بدون صناديق تقليدية */
+    .scene-header {
+      position: fixed;
+      top: 68px; left: 0; right: 0;
+      z-index: 50;
+      text-align: center;
+      padding: 0 20px;
+      pointer-events: none;
+    }
+    .scene-header h1 {
       font-size: 1.65rem;
       font-weight: 900;
-      color: #fff;
-      text-shadow: 0 0 20px rgba(255, 42, 122, 0.8);
+      background: linear-gradient(90deg, #fff, #ff9ebb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 4px 15px rgba(255, 30, 86, 0.4));
       margin-bottom: 6px;
     }
-    .floating-caption p {
-      font-size: 0.98rem;
-      color: #ffb3c6;
-      max-width: 420px;
+    .scene-header p {
+      font-size: 0.96rem;
+      color: #c5cbe3;
+      max-width: 440px;
       margin: 0 auto;
-      line-height: 1.6;
+      line-height: 1.65;
       text-shadow: 0 2px 10px #000;
     }
 
-    /* منطقة الأزرار السفلية العائمة */
-    .bottom-dock {
-      position: fixed;
-      bottom: 32px; left: 0; right: 0;
-      z-index: 30;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      pointer-events: none;
-      padding: 0 20px;
-    }
-
-    .glow-btn {
-      pointer-events: auto;
-      background: linear-gradient(135deg, #ff1e56, #a30b37);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      padding: 13px 36px;
-      border-radius: 50px;
-      font-family: 'Tajawal', sans-serif;
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-      box-shadow: 0 0 25px rgba(255, 30, 86, 0.6);
-      transition: transform 0.2s;
-    }
-    .glow-btn:active { transform: scale(0.94); }
-
-    /* كبسولات الملاحظات الـ 4 العائمة تحت القلب */
-    .notes-bar {
-      display: none;
-      pointer-events: auto;
-      gap: 10px;
-      margin-bottom: 4px;
-    }
-    .note-pill {
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255, 77, 121, 0.5);
-      color: #fff;
-      font-weight: 700;
-      display: flex; justify-content: center; align-items: center;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    .note-pill.active {
-      background: #ff1e56;
-      box-shadow: 0 0 18px #ff1e56;
-      transform: scale(1.15);
-    }
-
-    /* ================= مشهد الصور (Polaroids العائمة) ================= */
-    .Overlay-scene {
+    /* حاويات المشاهد الـ 6 */
+    .scene-layer {
       position: fixed;
       inset: 0;
-      z-index: 25;
+      z-index: 20;
       display: none;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       pointer-events: none;
+      opacity: 0;
     }
-    .polaroid-box {
-      pointer-events: auto;
-      width: 280px;
-      background: #fff;
-      padding: 12px 12px 22px 12px;
-      border-radius: 12px;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 30px rgba(255, 42, 122, 0.35);
-      cursor: pointer;
-      transform: rotate(-2deg);
-      transition: transform 0.4s ease;
-    }
-    .polaroid-pic {
-      width: 100%; height: 230px;
-      border-radius: 6px;
-      background-size: cover;
-      background-position: center;
-      background-color: #161224;
+    .scene-layer.active {
       display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 14px;
-      position: relative;
-      overflow: hidden;
-    }
-    .polaroid-pic::after {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.8) 5%, transparent 55%);
-    }
-    .polaroid-pic span {
-      position: relative; z-index: 2;
-      color: #ffd166; font-weight: 700; font-size: 0.85rem;
-    }
-    .polaroid-cap {
-      color: #1a1a2e;
-      font-weight: 700;
-      font-size: 0.98rem;
-      margin-top: 14px;
-      text-align: center;
-      line-height: 1.5;
+      opacity: 1;
     }
 
-    /* ================= مشهد الوردة المطابق 100% للفيديو الأول ================= */
-    .flower-scene-wrap {
+    .btn-neon {
       pointer-events: auto;
-      width: 320px; height: 320px;
+      background: linear-gradient(135deg, var(--crimson), #9e0b37);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 13px 34px;
+      border-radius: 50px;
+      font-family: 'Tajawal', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(255, 30, 86, 0.55);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-neon:active { transform: scale(0.94); }
+
+    /* ==================== المشهد 1: المونيتور الطبي والبصمة ==================== */
+    .ecg-monitor {
+      width: 90%;
+      max-width: 420px;
+      height: 140px;
+      border-radius: 20px;
+      background: rgba(5, 7, 16, 0.75);
+      border: 1px solid rgba(255, 30, 86, 0.35);
+      box-shadow: 0 0 35px rgba(255, 30, 86, 0.15), inset 0 0 25px rgba(0, 0, 0, 0.8);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 35px;
+    }
+    .ecg-grid-bg {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 242, 254, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 242, 254, 0.06) 1px, transparent 1px);
+      background-size: 18px 18px;
+    }
+    canvas#ecgCanvas {
+      width: 100%; height: 100%;
+      position: relative; z-index: 2;
+    }
+    .bpm-readout {
+      position: absolute;
+      top: 10px; left: 14px;
+      z-index: 3;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--crimson);
+      font-size: 1.1rem;
+      font-weight: bold;
+      text-shadow: 0 0 10px var(--crimson);
+    }
+
+    .biometric-pad {
+      pointer-events: auto;
+      position: relative;
+      width: 130px; height: 130px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+    .bio-svg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+    }
+    .ring-track { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 2; }
+    .ring-tech {
+      fill: none; stroke: var(--cyan); stroke-width: 2;
+      stroke-dasharray: 24 14 6 14;
+      transform-origin: center;
+      animation: spinRing 9s linear infinite;
+    }
+    .ring-prog {
+      fill: none; stroke: var(--crimson); stroke-width: 4.5;
+      stroke-linecap: round;
+      stroke-dasharray: 345; stroke-dashoffset: 345;
+      transform: rotate(-90deg); transform-origin: center;
+      filter: drop-shadow(0 0 10px var(--crimson));
+    }
+    @keyframes spinRing { to { transform: rotate(360deg); } }
+
+    .fp-core {
+      width: 82px; height: 82px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,30,86,0.22), transparent 72%);
+      display: flex; justify-content: center; align-items: center;
+      position: relative; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .fp-core svg {
+      width: 46px; height: 46px;
+      stroke: #fff; stroke-width: 1.7; fill: none;
+      transition: stroke 0.3s;
+    }
+    .scan-laser {
+      position: absolute;
+      width: 100%; height: 3px;
+      background: var(--cyan);
+      box-shadow: 0 0 15px var(--cyan), 0 0 30px var(--cyan);
+      top: 0; opacity: 0;
+    }
+    .scanning .scan-laser {
+      opacity: 1;
+      animation: laserSweep 0.85s ease-in-out infinite alternate;
+    }
+    .scanning .fp-core svg { stroke: var(--crimson); }
+    @keyframes laserSweep { from { top: 8%; } to { top: 92%; } }
+
+    /* ==================== المشهد 2: سماعة الطبيب ونقاط النبض حول القلب 3D ==================== */
+    .auscultation-zone {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 25;
+    }
+    .pulse-hotspot {
+      pointer-events: auto;
+      position: absolute;
+      width: 54px; height: 54px;
+      border-radius: 50%;
+      border: 1.5px dashed rgba(0, 242, 254, 0.7);
+      background: radial-gradient(circle, rgba(255,30,86,0.35), transparent 70%);
+      display: flex; justify-content: center; align-items: center;
+      cursor: pointer;
+      color: #fff;
+      font-size: 1.2rem;
+      box-shadow: 0 0 20px rgba(255, 30, 86, 0.5);
+      animation: hotspotPulse 1.5s infinite alternate;
+      transition: all 0.3s;
+    }
+    .pulse-hotspot.checked {
+      border-style: solid;
+      border-color: var(--cyan);
+      background: radial-gradient(circle, rgba(0,242,254,0.35), transparent 70%);
+      box-shadow: 0 0 20px var(--cyan);
+    }
+    @keyframes hotspotPulse {
+      from { transform: scale(0.92); }
+      to { transform: scale(1.12); }
+    }
+
+    /* الكبسولة الطبية العائمة لعرض تشخيص السماعة */
+    .stetho-hud {
+      position: fixed;
+      bottom: 28px; left: 20px; right: 20px;
+      max-width: 450px;
+      margin: 0 auto;
+      background: rgba(10, 12, 26, 0.82);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      border-radius: 22px;
+      padding: 18px 20px;
+      z-index: 30;
+      pointer-events: auto;
+      text-align: right;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+    }
+    .stetho-title {
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 5px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .stetho-body {
+      color: #eef2ff;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* ==================== المشهد 3: مسح البخار عن الصور (Scratch-to-Reveal) ==================== */
+    .scratch-stage-box {
+      pointer-events: auto;
+      position: relative;
+      width: 300px;
+      background: rgba(16, 18, 36, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 24px;
+      padding: 14px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.85), 0 0 30px rgba(255, 30, 86, 0.25);
+      text-align: center;
+      margin-top: 35px;
+    }
+    .photo-viewport {
+      position: relative;
+      width: 100%; height: 250px;
+      border-radius: 16px;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: flex-end;
+      padding: 14px;
+    }
+    .photo-viewport::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(8,8,20,0.88) 5%, transparent 55%);
+      pointer-events: none;
+    }
+    /* كانفاس الضباب الذي تمسحه حنين بإصبعها */
+    canvas#scratchCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      z-index: 5;
+      cursor: crosshair;
+    }
+    .photo-inner-tag {
+      position: relative; z-index: 2;
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    .photo-caption-txt {
+      color: #e2e8f0;
+      font-size: 0.95rem;
+      margin: 12px 0 10px;
+      line-height: 1.6;
+      min-height: 48px;
+    }
+    .carousel-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-mini {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    /* ==================== المشهد 4: لعبة القوس والسهم (Bow & Arrow) ==================== */
+    .archery-arena {
+      pointer-events: auto;
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      height: 430px;
+      margin-top: 30px;
+    }
+    #archerySvg {
+      width: 100%; height: 100%;
+      overflow: visible;
+    }
+
+    /* ==================== المشهد 5: الوردة السحرية المطابقة للفيديو 1 ==================== */
+    .rose-circle-world {
+      pointer-events: auto;
+      width: 310px; height: 310px;
       border-radius: 50%;
       background: #1a1e46;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 0 55px rgba(245, 148, 184, 0.35), inset 0 0 35px rgba(0,0,0,0.6);
+      box-shadow: 0 0 55px rgba(245, 148, 184, 0.3), inset 0 0 35px rgba(0,0,0,0.6);
       border: 2px solid rgba(245, 148, 184, 0.35);
+      margin-top: 25px;
     }
-    .f-hill1 { position: absolute; bottom: 25px; left: -40px; width: 240px; height: 110px; background: #14193d; border-radius: 50%; }
-    .f-hill2 { position: absolute; bottom: 15px; right: -45px; width: 250px; height: 110px; background: #172a45; border-radius: 50%; }
-    .f-hill3 { position: absolute; bottom: -30px; left: -20px; right: -20px; height: 95px; background: #0d2833; border-radius: 50% 50% 0 0; z-index: 2; }
+    .hill-b1 { position: absolute; bottom: 25px; left: -40px; width: 230px; height: 105px; background: #14193d; border-radius: 50%; }
+    .hill-b2 { position: absolute; bottom: 15px; right: -45px; width: 240px; height: 105px; background: #172a45; border-radius: 50%; }
+    .hill-b3 { position: absolute; bottom: -30px; left: -20px; right: -20px; height: 90px; background: #0d2833; border-radius: 50% 50% 0 0; z-index: 2; }
 
-    .f-title {
+    .rose-inside-title {
       position: absolute;
-      top: 34px; width: 100%;
+      top: 32px; width: 100%;
       text-align: center;
-      font-family: 'Georgia', serif;
+      font-family: 'Playfair Display', Georgia, serif;
       font-weight: bold;
-      font-size: 1.5rem;
+      font-size: 1.45rem;
       color: #ff3b6b;
       text-shadow: 0 0 15px #f594b8;
       z-index: 6;
       line-height: 1.25;
+      opacity: 0.15;
+      transition: opacity 0.8s ease;
     }
-    .f-title span { display: block; color: #f594b8; font-size: 1.3rem; }
+    .rose-inside-title span { display: block; color: #f594b8; font-size: 1.25rem; }
 
-    .f-dome {
+    .dome-jar {
       position: absolute;
-      bottom: 35px; left: 50%;
+      bottom: 34px; left: 50%;
       transform: translateX(-50%);
-      width: 118px; height: 168px;
+      width: 114px; height: 162px;
       border: 2.5px solid rgba(170, 225, 255, 0.38);
       border-bottom: 6px solid #071921;
       border-radius: 60px 60px 6px 6px;
       background: linear-gradient(135deg, rgba(255,255,255,0.14) 0%, rgba(245,148,184,0.06) 50%, rgba(0,210,255,0.1) 100%);
-      box-shadow: 0 0 35px rgba(245, 148, 184, 0.35), inset 10px 0 18px rgba(255,255,255,0.2);
+      box-shadow: 0 0 25px rgba(245, 148, 184, 0.2), inset 10px 0 18px rgba(255,255,255,0.2);
       z-index: 5;
+      transition: box-shadow 0.8s;
     }
-    .f-stem { position: absolute; bottom: 0; left: 56px; width: 5px; height: 82px; background: #0d694e; }
-    .f-leaf { position: absolute; width: 24px; height: 14px; background: #138765; border-radius: 16px 0 16px 0; }
-    .f-leaf.l { bottom: 34px; left: 34px; transform: rotate(-25deg); }
-    .f-leaf.r { bottom: 45px; left: 59px; transform: rotate(25deg) scaleX(-1); }
+    .r-stem { position: absolute; bottom: 0; left: 54px; width: 5px; height: 80px; background: #0d694e; }
+    .r-leaf { position: absolute; width: 22px; height: 13px; background: #138765; border-radius: 15px 0 15px 0; }
+    .r-leaf.l { bottom: 32px; left: 33px; transform: rotate(-25deg); }
+    .r-leaf.r { bottom: 43px; left: 57px; transform: rotate(25deg) scaleX(-1); }
 
-    .f-petals {
+    .r-petals {
       position: absolute;
-      bottom: 72px; left: 50%;
-      transform: translateX(-50%);
+      bottom: 70px; left: 50%;
+      transform: translateX(-50%) scale(0.85);
       width: 56px; height: 56px;
+      filter: brightness(0.45);
+      transition: all 0.7s ease;
     }
-    .f-petals > div {
+    .r-petals > div {
       position: absolute;
       border-radius: 15px;
       box-shadow: 0px 0px 30px #f594b8;
       background: linear-gradient(to bottom, #ff7aa8, #d52d58 70%, #9e1b3e);
     }
-    .f-petals > div:nth-child(1) { width: 26px; height: 38px; left: 15px; top: 8px; border-radius: 14px 14px 18px 18px; z-index: 5; }
-    .f-petals > div:nth-child(2) { width: 24px; height: 35px; left: 5px; top: 11px; transform: rotate(-20deg); z-index: 4; }
-    .f-petals > div:nth-child(3) { width: 24px; height: 35px; right: 5px; top: 11px; transform: rotate(20deg); z-index: 4; }
-    .f-petals > div:nth-child(4) { width: 22px; height: 30px; left: -1px; top: 15px; transform: rotate(-38deg); background: #b51f45; z-index: 3; }
-    .f-petals > div:nth-child(5) { width: 22px; height: 30px; right: -1px; top: 15px; transform: rotate(38deg); background: #b51f45; z-index: 3; }
+    .r-petals > div:nth-child(1) { width: 26px; height: 38px; left: 15px; top: 8px; border-radius: 14px 14px 18px 18px; z-index: 5; }
+    .r-petals > div:nth-child(2) { width: 24px; height: 35px; left: 5px; top: 11px; transform: rotate(-20deg); z-index: 4; }
+    .r-petals > div:nth-child(3) { width: 24px; height: 35px; right: 5px; top: 11px; transform: rotate(20deg); z-index: 4; }
+    .r-petals > div:nth-child(4) { width: 22px; height: 30px; left: -1px; top: 15px; transform: rotate(-38deg); background: #b51f45; z-index: 3; }
+    .r-petals > div:nth-child(5) { width: 22px; height: 30px; right: -1px; top: 15px; transform: rotate(38deg); background: #b51f45; z-index: 3; }
 
-    .f-dead-petal {
+    .r-dead-petal {
       position: absolute;
-      width: 14px; height: 9px;
-      left: 52px; top: 55px;
+      width: 13px; height: 8px;
+      left: 50px; top: 55px;
       background: #d52d58;
       border-radius: 12px 0 12px 0;
       box-shadow: 0 0 12px #f594b8;
-      animation: fallingPetal 4.2s ease-in-out infinite;
+      animation: fallPetalAnim 4.2s ease-in-out infinite;
       z-index: 4;
     }
-    @keyframes fallingPetal {
+    @keyframes fallPetalAnim {
       0% { transform: translate(0, 0) rotate(-30deg); opacity: 1; }
-      75% { transform: translate(-22px, 78px) rotate(40deg); opacity: 1; }
-      100% { transform: translate(-24px, 82px) rotate(55deg); opacity: 0; }
+      75% { transform: translate(-20px, 75px) rotate(40deg); opacity: 1; }
+      100% { transform: translate(-22px, 80px) rotate(55deg); opacity: 0; }
     }
 
-    /* ================= مشهد التورتة والمايكروفون المطابق للفيديو 4 ================= */
-    .cake-container {
+    /* شرارات الإضاءة الـ 3 حول القبة */
+    .dew-spark {
+      position: absolute;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff, var(--crimson));
+      box-shadow: 0 0 20px var(--crimson);
+      z-index: 10;
+      display: flex; justify-content: center; align-items: center;
+      cursor: pointer;
+      font-size: 1rem;
+      animation: sparkFloat 1.2s infinite alternate;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    @keyframes sparkFloat { to { transform: scale(1.2); } }
+
+    /* ==================== المشهد 6: التورتة + المايكروفون + الروشتة الختامية ==================== */
+    .cake-interactive-box {
       pointer-events: auto;
       display: flex;
       flex-direction: column;
       align-items: center;
+      margin-top: 25px;
       cursor: pointer;
     }
-    .candles-row {
+    .candles-group {
       display: flex;
-      gap: 14px;
+      gap: 16px;
       margin-bottom: -5px;
-      z-index: 5;
+      z-index: 6;
       opacity: 0;
     }
-    .candle {
-      width: 8px; height: 36px;
-      background: repeating-linear-gradient(45deg, #fff, #fff 4px, #ff2a7a 4px, #ff2a7a 8px);
+    .c-stick {
+      width: 9px; height: 36px;
+      background: repeating-linear-gradient(45deg, #fff, #fff 4px, #ff1e56 4px, #ff1e56 8px);
       border-radius: 3px;
       position: relative;
     }
-    .flame {
+    .c-flame {
       width: 13px; height: 22px;
       background: radial-gradient(circle, #fff 15%, #ffeb3b 55%, #ff6b00 95%);
       border-radius: 50% 50% 35% 35%;
       position: absolute;
-      top: -24px; left: -2.5px;
+      top: -24px; left: -2px;
       box-shadow: 0 0 18px #ffeb3b, 0 0 35px #ff6b00;
-      animation: flicker 0.14s infinite alternate;
+      animation: flameDance 0.14s infinite alternate;
       transition: all 0.4s ease;
     }
-    .flame.out { opacity: 0; transform: translateY(-20px) scale(0); }
-    @keyframes flicker {
+    .c-flame.out { opacity: 0; transform: translateY(-20px) scale(0); }
+    @keyframes flameDance {
       from { transform: rotate(-4deg) scale(0.94); }
       to { transform: rotate(4deg) scale(1.06); }
     }
 
-    .c-icing {
+    .cake-icing {
       width: 214px; height: 22px;
       background: #fff0f5;
       border-radius: 12px 12px 8px 8px;
       z-index: 4;
       margin-bottom: -10px;
-      transform: translateY(-200px);
+      transform: translateY(-220px);
       opacity: 0;
     }
-    .c-layer {
+    .cake-tier {
       width: 210px; height: 42px;
-      background: #7c4d2b;
+      background: #c2255c;
       border-radius: 8px;
       margin-top: -3px;
       border-bottom: 4px solid #fff0f5;
       box-shadow: 0 6px 15px rgba(0,0,0,0.5);
-      transform: translateY(-200px);
+      transform: translateY(-220px);
       opacity: 0;
     }
-    .c-plate {
+    .cake-tier.mid { background: #e64980; }
+    .cake-tier.top { background: #ff7597; }
+    .cake-plate {
       width: 250px; height: 10px;
       background: #e2e8f0;
       border-radius: 10px;
       box-shadow: 0 8px 25px rgba(0,0,0,0.8);
     }
 
-    .mic-meter {
-      width: 240px; height: 8px;
+    .mic-gauge-wrap {
+      width: 250px; height: 10px;
       background: rgba(255,255,255,0.12);
       border-radius: 10px;
       overflow: hidden;
-      margin-top: 22px;
+      margin-top: 20px;
+      border: 1px solid rgba(0, 242, 254, 0.35);
     }
-    .mic-fill {
+    .mic-gauge-fill {
       width: 4%; height: 100%;
-      background: linear-gradient(90deg, #00f0ff, #ff1e56);
-      box-shadow: 0 0 12px #ff1e56;
+      background: linear-gradient(90deg, var(--cyan), var(--crimson));
+      box-shadow: 0 0 12px var(--crimson);
       transition: width 0.08s;
     }
 
-    /* الرسالة الذهبية النهائية */
-    .golden-finale {
-      display: none;
-      max-width: 430px;
-      padding: 20px;
-      text-align: center;
+    /* الروشتة الطبية الختامية الفخمة (Rx Prescription) */
+    .rx-prescription {
       pointer-events: auto;
+      display: none;
+      width: 92%;
+      max-width: 440px;
+      background: rgba(12, 14, 28, 0.88);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 209, 102, 0.45);
+      border-radius: 24px;
+      padding: 24px 22px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.85), 0 0 35px rgba(255, 30, 86, 0.25);
+      text-align: right;
     }
-    .golden-cursive {
-      font-family: 'Dancing Script', cursive;
-      font-size: 3.3rem;
-      color: #ffd166;
-      text-shadow: 0 0 25px rgba(255, 209, 102, 0.7);
+    .rx-top-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px dashed rgba(255,255,255,0.2);
+      padding-bottom: 12px;
       margin-bottom: 14px;
     }
-    .final-letter-text {
-      font-size: 1.08rem;
-      line-height: 1.9;
-      color: #f8f9fa;
-      text-shadow: 0 2px 12px #000;
+    .rx-symbol {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      color: var(--gold);
+      font-weight: bold;
+    }
+    .rx-body-text {
+      color: #f1f5f9;
+      font-size: 1.02rem;
+      line-height: 1.85;
+      min-height: 120px;
+    }
+    .rx-stamp {
+      margin-top: 16px;
+      text-align: left;
+      font-family: 'Playfair Display', serif;
+      color: var(--rose-glow);
+      font-size: 1rem;
     }
   </style>
 </head>
 <body>
 
-  <audio id="bgMusic" loop preload="auto">
+  <!-- موسيقى بيانو سينمائية دافئة تعمل فور لمس البصمة (أو ضع ملف music.mp3 في نفس المجلد) -->
+  <audio id="bgAudio" loop preload="auto">
     <source src="music.mp3" type="audio/mpeg">
-    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mpeg">
+    <source src="https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3" type="audio/mpeg">
   </audio>
 
-  <canvas id="mainCanvas"></canvas>
+  <div id="webglContainer"></div>
 
   <!-- الهيدر العائم -->
-  <div class="minimal-hud">
-    <div class="hud-tag" id="hudStatus">ECG // HANEEN</div>
-    <button class="music-pill" onclick="toggleAudio()">🎵 <span id="musicState">الصوت</span></button>
-  </div>
-
-  <!-- العنوان السينمائي العائم -->
-  <div class="floating-caption" id="topCaption">
-    <h1 id="capTitle">نبض خارج القواعد الطبية</h1>
-    <p id="capDesc">المسى الشاشة في أي مكان عشان تشوفي تخطيط النبض بيتحول لإيه لما بتكوني موجودة ✨</p>
-  </div>
-
-  <!-- مشاهد الـ Overlay (الصور، الوردة، التورتة) -->
-  <!-- المشهد 2: ألبوم صور الخروجات -->
-  <div class="Overlay-scene" id="photoScene">
-    <div class="polaroid-box" id="polBox" onclick="flipNextPhoto()">
-      <div class="polaroid-pic" id="polPic" style="background-image: url('photo1.jpg'), linear-gradient(135deg, #2b1055, #d52d58);">
-        <span id="polBadge">اللقطة 1 / 4 ✨</span>
-      </div>
-      <div class="polaroid-cap" id="polCap">من البداية وكان واضح إنك شخص مختلف ومميز 🌹</div>
+  <div class="hud-top">
+    <div class="hud-pill">
+      <div class="pulse-led"></div>
+      <span id="hudModeTxt">BIO-MONITOR // HANEEN</span>
     </div>
-  </div>
-
-  <!-- المشهد 3: الوردة السحرية المطابقة للفيديو 1 -->
-  <div class="Overlay-scene" id="roseScene">
-    <div class="flower-scene-wrap" id="flowerCircle">
-      <div class="f-title">
-        Happy Birthday
-        <span>Haneen ❤️</span>
-      </div>
-      <div class="f-hill1"></div>
-      <div class="f-hill2"></div>
-      <div class="f-hill3"></div>
-      <div class="f-dome">
-        <div class="f-stem"></div>
-        <div class="f-leaf l"></div>
-        <div class="f-leaf r"></div>
-        <div class="f-dead-petal"></div>
-        <div class="f-petals">
-          <div></div><div></div><div></div><div></div><div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- المشهد 4: التورتة والمايكروفون والرسالة الذهبية -->
-  <div class="Overlay-scene" id="cakeScene">
-    <div class="cake-container" id="cakeBox" onclick="blowOutCandles()">
-      <div class="candles-row" id="candlesRow">
-        <div class="candle"><div class="flame"></div></div>
-        <div class="candle"><div class="flame"></div></div>
-        <div class="candle"><div class="flame"></div></div>
-        <div class="candle"><div class="flame"></div></div>
-        <div class="candle"><div class="flame"></div></div>
-      </div>
-      <div class="c-icing" id="cIcing"></div>
-      <div class="c-layer" id="cL1"></div>
-      <div class="c-layer" id="cL2"></div>
-      <div class="c-layer" id="cL3"></div>
-      <div class="c-plate"></div>
-
-      <div class="mic-meter" id="micMeter">
-        <div class="mic-fill" id="micFill"></div>
-      </div>
-    </div>
-
-    <div class="golden-finale" id="goldenFinale">
-      <div class="golden-cursive">Happy Birthday Haneen</div>
-      <div class="final-letter-text" id="finalMsgBox"></div>
-    </div>
-  </div>
-
-  <!-- الأزرار السفلية العائمة -->
-  <div class="bottom-dock">
-    <div class="notes-bar" id="notesBar">
-      <div class="note-pill active" onclick="showDoctorNote(0)">1</div>
-      <div class="note-pill" onclick="showDoctorNote(1)">2</div>
-      <div class="note-pill" onclick="showDoctorNote(2)">3</div>
-      <div class="note-pill" onclick="showDoctorNote(3)">4</div>
-    </div>
-    <button class="glow-btn" id="mainActionBtn" onclick="advanceStep()">ابدئي التجربة ✨</button>
-  </div>
-
-  <script>
-    // ================= 1. الصوت =================
-    const bgMusic = document.getElementById('bgMusic');
-    let playing = false;
-    function toggleAudio() {
-      if (playing) {
-        bgMusic.pause(); playing = false;
-        document.getElementById('musicState').innerText = 'تشغيل';
-      } else {
-        bgMusic.volume = 0.6;
-        bgMusic.play().then(() => {
-          playing = true;
-          document.getElementById('musicState').innerText = 'إيقاف';
-        }).catch(() => {});
-      }
-    }
-
-    // ================= 2. محرك الـ 3D Particles + Text Heart (سلس 100% باللمس) =================
-    const canvas = document.getElementById('mainCanvas');
-    const ctx = canvas.getContext('2d');
-    let W, H;
-    function resize() {
-      W = canvas.width = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-    }
-    resize();
-    window.addEventListener('resize', resize);
-
-    const TOTAL = 1600;
-    const pts = [];
-    let visualState = 'ECG'; // 'ECG' -> 'HEART_3D' -> 'BACKGROUND'
-
-    // زوايا الدوران الفيزيائية (تعمل باللمس مباشرة على الشاشة)
-    let rotY = 0;
-    let rotX = 0;
-    let velY = 0.008;
-    let velX = 0;
-    let dragging = false;
-    let lastX = 0, lastY = 0;
-
-    for (let i = 0; i < TOTAL; i++) {
-      // توزيع ثلاثي الأبعاد كامل على سطح وحجم القلب
-      const t = Math.random() * Math.PI * 2;
-      const r = Math.pow(Math.random(), 0.35);
-      const hx = 16 * Math.pow(Math.sin(t), 3) * r;
-      const hy = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * r;
-      const hz = (Math.random() - 0.5) * 14 * Math.sin(t) * r;
-
-      pts.push({
-        x: (i / TOTAL) * W,
-        y: H / 2,
-        z: 0,
-        hx: hx * 11,
-        hy: hy * 11,
-        hz: hz * 11,
-        size: Math.random() * 2.2 + 0.8,
-        color: Math.random() > 0.15 ? '#ff1e56' : '#00f0ff',
-        isWord: i % 45 === 0
-      });
-    }
-
-    // ربط اللمس مباشرة بالنافذة عشان القلب يلف مع حركة الصباع بدون أي تقطيع
-    window.addEventListener('touchstart', e => {
-      if (e.target.closest('button') || e.target.closest('.note-pill') || e.target.closest('.polaroid-box')) return;
-      if (visualState === 'ECG') {
-        advanceStep();
-        return;
-      }
-      dragging = true;
-      lastX = e.touches[0].clientX;
-      lastY = e.touches[0].clientY;
-    }, { passive: true });
-
-    window.addEventListener('touchmove', e => {
-      if (!dragging) return;
-      const dx = e.touches[0].clientX - lastX;
-      const dy = e.touches[0].clientY - lastY;
-      velY = dx * 0.012;
-      velX = dy * 0.012;
-      rotY += velY;
-      rotX = Math.max(-0.8, Math.min(0.8, rotX + velX));
-      lastX = e.touches[0].clientX;
-      lastY = e.touches[0].clientY;
-    }, { passive: true });
-
-    window.addEventListener('touchend', () => { dragging = false; });
-
-    // دعم الماوس أيضاً للابتوب
-    window.addEventListener('mousedown', e => {
-      if (e.target.closest('button') || e.target.closest('.note-pill') || e.target.closest('.polaroid-box')) return;
-      if (visualState === 'ECG') { advanceStep(); return; }
-      dragging = true;
-      lastX = e.clientX; lastY = e.clientY;
-    });
-    window.addEventListener('mousemove', e => {
-      if (!dragging) return;
-      velY = (e.clientX - lastX) * 0.01;
-      velX = (e.clientY - lastY) * 0.01;
-      rotY += velY;
-      rotX = Math.max(-0.8, Math.min(0.8, rotX + velX));
-      lastX = e.clientX; lastY = e.clientY;
-    });
-    window.addEventListener('mouseup', () => { dragging = false; });
-
-    let tick = 0;
-    function renderLoop() {
-      ctx.fillStyle = 'rgba(4, 4, 9, 0.3)';
-      ctx.fillRect(0, 0, W, H);
-      tick += 0.05;
-
-      if (!dragging && visualState !== 'ECG') {
-        rotY += velY;
-        velY = velY * 0.95 + 0.006 * 0.05;
-        rotX *= 0.95;
-      }
-
-      const beat = visualState === 'HEART_3D' ? (1 + Math.pow(Math.sin(tick * 1.5), 6) * 0.12) : 1;
-      const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
-      const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
-
-      for (let i = 0; i < TOTAL; i++) {
-        const p = pts[i];
-
-        if (visualState === 'ECG') {
-          // خط تخطيط القلب الطبي الحي كما في بداية الفيديو الثالث
-          const norm = i / TOTAL;
-          const sx = norm * W;
-          const wave = ((norm * 3.5 - tick * 0.35) % 1 + 1) % 1;
-          let offset = 0;
-          if (wave > 0.42 && wave < 0.45) offset = -20;
-          else if (wave >= 0.45 && wave < 0.48) offset = -110;
-          else if (wave >= 0.48 && wave < 0.51) offset = 85;
-          else if (wave >= 0.51 && wave < 0.54) offset = -30;
-          else if (wave >= 0.58 && wave < 0.65) offset = -32 * Math.sin((wave - 0.58) / 0.07 * Math.PI);
-
-          p.x += (sx - p.x) * 0.3;
-          p.y += ((H / 2 + offset + (Math.random() - 0.5) * 4) - p.y) * 0.3;
-        } else {
-          // دوران ثلاثي الأبعاد حقيقي حول المحورين X و Y
-          const scaleMult = visualState === 'BACKGROUND' ? 1.8 : beat;
-          let x1 = p.hx * scaleMult;
-          let y1 = p.hy * scaleMult;
-          let z1 = p.hz * scaleMult;
-
-          // دوران Y
-          let rx = x1 * cosY - z1 * sinY;
-          let rz = x1 * sinY + z1 * cosY;
-          // دوران X
-          let ry = y1 * cosX - rz * sinX;
-          rz = y1 * sinX + rz * cosX;
-
-          const fov = 420;
-          const proj = fov / (fov + rz + 260);
-          const tx = W / 2 + rx * proj;
-          const ty = H / 2 + ry * proj;
-
-          p.x += (tx - p.x) * 0.09;
-          p.y += (ty - p.y) * 0.09;
-        }
-
-        if (visualState === 'HEART_3D' && p.isWord) {
-          ctx.fillStyle = 'rgba(255, 180, 210, 0.75)';
-          ctx.font = '10px Share Tech Mono';
-          ctx.fillText('Haneen', p.x, p.y);
-        } else {
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fillStyle = visualState === 'BACKGROUND' ? 'rgba(255, 30, 86, 0.22)' : p.color;
-          ctx.fill();
-        }
-      }
-
-      if (visualState === 'HEART_3D') {
-        ctx.save();
-        ctx.textAlign = 'center';
-        ctx.fillStyle = '#fff';
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = '#ff1e56';
-        ctx.font = 'bold 26px Georgia, serif';
-        ctx.fillText('HANEEN', W / 2, H / 2 - 4);
-        ctx.font = '11px Share Tech Mono';
-        ctx.fillStyle = '#00f0ff';
-        ctx.fillText('DRAG TO ROTATE 360°', W / 2, H / 2 + 18);
-        ctx.restore();
-      }
-
-      requestAnimationFrame(renderLoop);
-    }
-    renderLoop();
-
-    // ================= 3. تسلسل المشاهد والملاحظات =================
-    let currentStep = 0;
-
-    const docNotes = [
-      { t: "01 // استثناء القاعدة الطبية", d: "في الطب كل نبضة ليها تفسير علمي، إلا الراحة والهدوء اللي بيحصلوا لما بنتكلم.. حضورك بيكسر أي روتين من غير مجهود." },
-      { t: "02 // القيمة مش بالوقت", d: "الموضوع عمره ما كان بعدد الأيام، الموضوع بقيمة الشخص وتأثيره.. وأنتِ من البداية أثبتي إنك شخص مختلف ومكسب حقيقي." },
-      { t: "03 // تفاصيل خروجاتنا ☕", d: "كل مرة بننزل فيها وكل لقطة بنتصورها بتأكدلي إن الوقت معاكي بيمشي بقانون تاني.. الساعات بتعدي كأنها دقايق." },
-      { t: "04 // التشخيص النهائي 🩺", d: "تقدير كبير لروحك ولشخصيتك اللي بتخلي أي يوم أروق.. حركي القلب بإيدك أو اضغطي تحت عشان نفتح أرشيف صورنا." }
-    ];
-
-    function showDoctorNote(idx) {
-      document.querySelectorAll('.note-pill').forEach((b, i) => b.classList.toggle('active', i === idx));
-      document.getElementById('capTitle').innerText = docNotes[idx].t;
-      document.getElementById('capDesc').innerText = docNotes[idx].d;
-      velY = 0.09; // دفعة دوران سريعة مع كل ضغطة
-    }
-
-    function advanceStep() {
-      if (!playing) toggleAudio();
-      currentStep++;
-
-      if (currentStep === 1) {
-        // التحول إلى القلب ثلاثي الأبعاد
-        visualState = 'HEART_3D';
-        document.getElementById('hudStatus').innerText = '3D HEART // INTERACTIVE';
-        document.getElementById('notesBar').style.display = 'flex';
-        showDoctorNote(0);
-        document.getElementById('mainActionBtn').innerText = 'لقطات من خروجاتنا 📸';
-      }
-      else if (currentStep === 2) {
-        // مشهد الصور العائمة
-        visualState = 'BACKGROUND';
-        document.getElementById('notesBar').style.display = 'none';
-        document.getElementById('capTitle').innerText = 'لقطات بتحكي لوحدها 📸';
-        document.getElementById('capDesc').innerText = 'اضغطي على الصورة عشان تقلبي في ذكريات خروجاتنا سوا';
-        document.getElementById('photoScene').style.display = 'flex';
-        document.getElementById('mainActionBtn').innerText = 'الوردة المضيئة 🌹';
-      }
-      else if (currentStep === 3) {
-        // مشهد الوردة الزجاجية المطابقة للفيديو 1
-        document.getElementById('photoScene').style.display = 'none';
-        document.getElementById('roseScene').style.display = 'flex';
-        document.getElementById('capTitle').innerText = 'وردة حنين اللي مبتذبلش 🌹';
-        document.getElementById('capDesc').innerText = 'تفصيلة صغيرة تفضل منورة باسمك دايماً';
-        document.getElementById('mainActionBtn').innerText = 'تورتة عيد ميلادك 🎂';
-      }
-      else if (currentStep === 4) {
-        // مشهد التورتة والمايكروفون
-        document.getElementById('roseScene').style.display = 'none';
-        document.getElementById('cakeScene').style.display = 'flex';
-        document.getElementById('mainActionBtn').style.display = 'none';
-        document.getElementById('capTitle').innerText = 'اتمني أمنية يا حنين 🎂';
-        document.getElementById('capDesc').innerText = 'انفخي في المايكروفون بتاع الموبايل (أو المسى الشموع) عشان تطفيها!';
-
-        // أنيميشن نزول طبقات التورتة كما في الفيديو 4
-        const tl = gsap.timeline({ onComplete: startMicOnly });
-        tl.to('#cL3', { y: 0, opacity: 1, duration: 0.45, ease: 'bounce.out' })
-          .to('#cL2', { y: 0, opacity: 1, duration: 0.45, ease: 'bounce.out' }, '-=0.2')
-          .to('#cL1', { y: 0, opacity: 1, duration: 0.45, ease: 'bounce.out' }, '-=0.2')
-          .to('#cIcing', { y: 0, opacity: 1, duration: 0.35 }, '-=0.1')
-          .to('#candlesRow', { opacity: 1, duration: 0.4 });
-      }
-    }
-
-    // ================= 4. تقليب الصور =================
-    const photos = [
-      { img: "url('photo1.jpg'), linear-gradient(135deg, #2b1055, #d52d58)", b: "اللقطة 1 / 4 ✨", c: "من البداية وكان واضح إنك شخص مختلف ومميز 🌹" },
-      { img: "url('photo2.jpg'), linear-gradient(135deg, #0f2027, #2c5364)", b: "اللقطة 2 / 4 ☕", c: "الوقت وإحنا قاعدين سوا بيعدي بقانون تاني خالص 🌟" },
-      { img: "url('photo3.jpg'), linear-gradient(135deg, #1f1c2c, #928dab)", b: "اللقطة 3 / 4 📸", c: "صورنا دايماً شايلة ضحكة حقيقية من القلب ✨" },
-      { img: "url('photo4.jpg'), linear-gradient(135deg, #3a1c71, #d76d77)", b: "اللقطة 4 / 4 ❤️", c: "كل خروجة معاكي بتثبت إن اللي جاي أحلى بكتير" }
-    ];
-    let pIdx = 0;
-    function flipNextPhoto() {
-      pIdx = (pIdx + 1) % photos.length;
-      const box = document.getElementById('polBox');
-      gsap.fromTo(box, { scale: 0.85, rotation: 8 }, { scale: 1, rotation: pIdx % 2 === 0 ? -2 : 2, duration: 0.4, ease: 'back.out(1.7)' });
-      document.getElementById('polPic').style.backgroundImage = photos[pIdx].img;
-      document.getElementById('polBadge').innerText = photos[pIdx].b;
-      document.getElementById('polCap').innerText = photos[pIdx].c;
-    }
-
-    // ================= 5. المايكروفون فقط (بدون كاميرا) لإطفاء الشموع =================
-    let blownOut = false;
-    const wishText = "كل سنة وأنتِ طيبة يا حنين.. حبيت أعملك حاجة مختلفة تشبهك وتفضل ذكرى مميزة بينا. وجودك في حياتي، خروجاتنا، وكل تفصيلة بنعيشها سوا ليها مكانة كبيرة عندي. بتمنالك سنة جديدة مليانة نجاح وفرحة، وتفضلي دايماً منورة أيامي بضحكتك. ❤️🌹🩺";
-
-    function blowOutCandles() {
-      if (blownOut) return;
-      blownOut = true;
-      document.querySelectorAll('.flame').forEach(f => f.classList.add('out'));
-      document.getElementById('micFill').style.width = '100%';
-      confetti({ particleCount: 140, spread: 90, origin: { y: 0.6 } });
-
-      setTimeout(() => {
-        document.getElementById('cakeBox').style.display = 'none';
-        document.getElementById('topCaption').style.display = 'none';
-        const fin = document.getElementById('goldenFinale');
-        fin.style.display = 'block';
-
-        let i = 0;
-        const box = document.getElementById('finalMsgBox');
-        function type() {
-          if (i < wishText.length) {
-            box.innerHTML += wishText.charAt(i);
-            i++;
-            setTimeout(type, 38);
-          }
-        }
-        type();
-      }, 1000);
-    }
-
-    function startMicOnly() {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
-      navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(stream => {
-        const aCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const src = aCtx.createMediaStreamSource(stream);
-        const analyser = aCtx.createAnalyser();
-        analyser.fftSize = 256;
-        src.connect(analyser);
-        const data = new Uint8Array(analyser.frequencyBinCount);
-
-        function checkMic() {
-          if (blownOut) return;
-          analyser.getByteFrequencyData(data);
-          let avg = data.reduce((a, b) => a + b, 0) / data.length;
-          document.getElementById('micFill').style.width = Math.min(100, (avg / 42) * 100) + '%';
-          if (avg > 42) {
-            blowOutCandles();
-            stream.getTracks().forEach(t => t.stop());
-          } else {
-            requestAnimationFrame(checkMic);
-          }
-        }
-        checkMic();
-      }).catch(() => {});
-    }
-  </script>
-</body>
-</html>
+    <div class="step-dots">
+      <div class="step
