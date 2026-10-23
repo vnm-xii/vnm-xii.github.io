@@ -3,20 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Haneen | Happy Birthday ✨</title>
+  <title>Haneen | 19th Birthday ✨</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Amiri:ital,wght@0,700;1,700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap');
 
     :root {
       --bg-dark: #07050a;
-      --bg-warm: #160c18;
+      --bg-warm: #180c1c;
       --gold: #e6c17a;
       --gold-light: #f9e2b3;
       --rose: #e05780;
       --rose-soft: #f497b6;
       --glass: rgba(255, 255, 255, 0.045);
-      --glass-border: rgba(230, 193, 122, 0.22);
+      --glass-border: rgba(230, 193, 122, 0.24);
       --text-main: #f8f5f2;
       --text-muted: #bbaab8;
     }
@@ -30,13 +31,13 @@
     html, body {
       width: 100%; height: 100dvh;
       overflow: hidden;
-      background: radial-gradient(circle at 50% 25%, var(--bg-warm) 0%, var(--bg-dark) 80%);
+      background: radial-gradient(circle at 50% 25%, var(--bg-warm) 0%, var(--bg-dark) 82%);
       color: var(--text-main);
       font-family: 'Tajawal', sans-serif;
       position: relative;
     }
 
-    /* إضاءة خلفية ناعمة (Bokeh Ambient Light) */
+    /* إضاءة خلفية ناعمة */
     .ambient-light {
       position: fixed;
       inset: 0;
@@ -48,7 +49,7 @@
       position: absolute;
       border-radius: 50%;
       filter: blur(85px);
-      opacity: 0.28;
+      opacity: 0.26;
       animation: drift 14s ease-in-out infinite alternate;
     }
     .orb-1 {
@@ -67,66 +68,24 @@
       100% { transform: translate(-30px, 40px) scale(1.15); }
     }
 
-    /* الشريط العلوي الفخم */
-    .top-nav {
+    /* شعار علوي نظيف وبسيط جداً بدون خطوط أو أزرار */
+    .top-brand-only {
       position: fixed;
-      top: 20px; left: 22px; right: 22px;
+      top: 20px; left: 0; right: 0;
       z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      text-align: center;
+      pointer-events: none;
     }
-
     .brand-tag {
       font-family: 'Playfair Display', serif;
       font-style: italic;
       color: var(--gold);
-      font-size: 1.05rem;
-      letter-spacing: 1px;
+      font-size: 1.1rem;
+      letter-spacing: 1.5px;
+      opacity: 0.85;
     }
 
-    .progress-pills {
-      display: flex;
-      gap: 6px;
-    }
-    .p-pill {
-      width: 16px; height: 3px;
-      border-radius: 4px;
-      background: rgba(255, 255, 255, 0.14);
-      transition: all 0.5s ease;
-    }
-    .p-pill.active {
-      width: 32px;
-      background: var(--gold);
-      box-shadow: 0 0 12px rgba(230, 193, 122, 0.6);
-    }
-
-    .vinyl-btn {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--glass-border);
-      backdrop-filter: blur(12px);
-      color: var(--gold-light);
-      padding: 6px 14px;
-      border-radius: 30px;
-      font-family: 'Tajawal', sans-serif;
-      font-size: 0.8rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .vinyl-disc {
-      width: 16px; height: 16px;
-      border-radius: 50%;
-      background: radial-gradient(circle, var(--gold) 25%, #111 30%, #222 65%, var(--gold) 70%);
-      display: inline-block;
-    }
-    .playing .vinyl-disc {
-      animation: spinDisc 3s linear infinite;
-    }
-    @keyframes spinDisc { to { transform: rotate(360deg); } }
-
-    /* حاوية الفصول (Chapters) */
+    /* حاوية الفصول */
     .chapter {
       position: fixed;
       inset: 0;
@@ -135,7 +94,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 75px 22px 35px;
+      padding: 60px 22px 30px;
       opacity: 0;
       pointer-events: none;
       transform: translateY(18px);
@@ -150,46 +109,46 @@
     }
 
     .chapter-label {
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       color: var(--gold);
       letter-spacing: 2.5px;
       text-transform: uppercase;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       font-weight: 700;
     }
     .chapter-title {
       font-family: 'Amiri', serif;
-      font-size: 2.1rem;
+      font-size: 2.05rem;
       color: #fff;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       font-weight: 700;
       text-shadow: 0 4px 20px rgba(0,0,0,0.6);
     }
     .chapter-sub {
       color: var(--text-muted);
-      font-size: 0.98rem;
+      font-size: 0.96rem;
       max-width: 400px;
-      line-height: 1.75;
-      margin-bottom: 24px;
+      line-height: 1.7;
+      margin-bottom: 20px;
     }
 
     .btn-luxury {
       background: linear-gradient(135deg, var(--gold), #b88c42);
       color: #120b14;
       border: none;
-      padding: 13px 36px;
+      padding: 13px 34px;
       border-radius: 40px;
       font-family: 'Tajawal', sans-serif;
       font-weight: 800;
-      font-size: 0.98rem;
+      font-size: 0.96rem;
       cursor: pointer;
       box-shadow: 0 10px 30px rgba(230, 193, 122, 0.3);
-      transition: transform 0.25s, box-shadow 0.25s;
-      margin-top: 16px;
+      transition: all 0.35s ease;
+      margin-top: 14px;
     }
     .btn-luxury:active { transform: scale(0.95); }
 
-    /* ==================== الفصل 1: البصمة المخملية الدافئة ==================== */
+    /* ==================== الفصل 1: البصمة ==================== */
     .touch-gate {
       position: relative;
       width: 135px; height: 135px;
@@ -251,7 +210,7 @@
       background: radial-gradient(circle, rgba(224, 87, 128, 0.28), rgba(230, 193, 122, 0.1));
     }
 
-    /* ==================== الفصل 2: كروت الملاحظات الزجاجية (لمسة طب بشري راقية) ==================== */
+    /* ==================== الفصل 2: كروت الملاحظات ==================== */
     .story-card-container {
       width: 100%;
       max-width: 410px;
@@ -312,12 +271,12 @@
       cursor: pointer;
     }
 
-    /* ==================== الفصل 3: الصور الحقيقية القابلة للقلب (3D Flip Polaroids) ==================== */
+    /* ==================== الفصل 3: الصور القابلة للقلب (3D Flip Polaroids) ==================== */
     .polaroid-scene {
-      width: 285px;
-      height: 350px;
+      width: 280px;
+      height: 335px;
       perspective: 1200px;
-      margin: 4px auto 14px;
+      margin: 2px auto 12px;
       cursor: pointer;
     }
     .polaroid-inner {
@@ -340,17 +299,16 @@
       box-shadow: 0 25px 55px rgba(0, 0, 0, 0.75);
     }
 
-    /* وجه الصورة الأمامي */
     .polaroid-front {
       background: #f8f5f0;
-      padding: 14px 14px 52px 14px;
+      padding: 13px 13px 48px 13px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
     .pol-img {
       width: 100%;
-      height: 245px;
+      height: 235px;
       border-radius: 10px;
       background-size: cover;
       background-position: center;
@@ -365,20 +323,19 @@
     .pol-front-caption {
       color: #2b2129;
       font-weight: 800;
-      font-size: 0.95rem;
-      margin-top: 12px;
+      font-size: 0.92rem;
+      margin-top: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0 4px;
     }
 
-    /* ظهر الصورة المكتوب عليه الذكرى */
     .polaroid-back {
       background: linear-gradient(145deg, #1d1422, #120c16);
       border: 1px solid var(--gold);
       transform: rotateY(180deg);
-      padding: 28px 22px;
+      padding: 26px 20px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -387,10 +344,10 @@
     }
     .back-quote {
       font-family: 'Amiri', serif;
-      font-size: 1.3rem;
+      font-size: 1.28rem;
       color: var(--gold-light);
       line-height: 1.85;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
     .back-hint {
       font-size: 0.8rem;
@@ -403,21 +360,27 @@
       align-items: center;
       margin-top: 4px;
     }
+    .seen-status {
+      font-size: 0.82rem;
+      color: var(--gold-light);
+      margin-top: 8px;
+      opacity: 0.85;
+    }
 
-    /* ==================== الفصل 4: أمنيات العام الجديد المضيئة ==================== */
+    /* ==================== الفصل 4: أمنيات السنة الجديدة ==================== */
     .lanterns-grid {
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
       width: 100%;
-      max-width: 400px;
-      margin-bottom: 15px;
+      max-width: 410px;
+      margin-bottom: 12px;
     }
     .wish-item {
       background: var(--glass);
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 20px;
-      padding: 16px 20px;
+      padding: 15px 18px;
       display: flex;
       align-items: center;
       gap: 14px;
@@ -426,18 +389,19 @@
       transition: all 0.4s ease;
     }
     .wish-item.lit {
-      background: rgba(230, 193, 122, 0.12);
+      background: rgba(230, 193, 122, 0.14);
       border-color: var(--gold);
-      box-shadow: 0 0 25px rgba(230, 193, 122, 0.2);
+      box-shadow: 0 0 25px rgba(230, 193, 122, 0.22);
+      transform: translateY(-2px);
     }
     .wish-star {
-      width: 42px; height: 42px;
+      width: 40px; height: 40px;
       border-radius: 50%;
       background: rgba(255,255,255,0.06);
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       flex-shrink: 0;
       transition: all 0.4s;
     }
@@ -448,83 +412,72 @@
       transform: scale(1.1);
     }
     .wish-text {
-      font-size: 0.96rem;
+      font-size: 0.95rem;
       color: var(--text-muted);
-      line-height: 1.6;
+      line-height: 1.65;
       transition: color 0.4s;
+    }
+    .wish-prefix {
+      color: var(--gold);
+      font-weight: 800;
+      margin-left: 4px;
     }
     .wish-item.lit .wish-text {
       color: #fff;
       font-weight: 500;
     }
 
-    /* ==================== الفصل 5: الشمعة الواقعية والمايكروفون والظرف المختوم ==================== */
-    .candle-stage-wrap {
+    /* ==================== الفصل 5: التورتة الانسيابية + شمعة 19 + المايكروفون فقط ==================== */
+    .cake-stage-wrap {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin: 10px 0 20px;
+      margin: 4px 0 10px;
       position: relative;
-      cursor: pointer;
     }
 
-    /* هالة الضوء الحقيقية للشمعة */
+    .cake-svg-container {
+      width: 280px;
+      height: 245px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* هالة إضاءة شموع الـ 19 */
     .candle-aura {
-      width: 220px; height: 220px;
+      width: 210px; height: 210px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(255, 185, 60, 0.35) 0%, rgba(224, 87, 128, 0.12) 45%, transparent 72%);
+      background: radial-gradient(circle, rgba(255, 190, 70, 0.35) 0%, rgba(224, 87, 128, 0.14) 50%, transparent 72%);
       position: absolute;
-      top: -75px;
+      top: -25px;
       pointer-events: none;
-      animation: auraBreath 2.2s ease-in-out infinite alternate;
+      opacity: 0;
       transition: opacity 0.6s ease;
     }
-    .candle-aura.out { opacity: 0; }
+    .candle-aura.lit {
+      opacity: 1;
+      animation: auraBreath 2s ease-in-out infinite alternate;
+    }
     @keyframes auraBreath {
-      from { transform: scale(0.92); opacity: 0.75; }
-      to { transform: scale(1.1); opacity: 1; }
+      from { transform: scale(0.94); }
+      to { transform: scale(1.08); }
     }
 
-    /* لهب الشمعة الفيزيائي */
-    .real-flame {
-      width: 24px;
-      height: 52px;
-      background: radial-gradient(ellipse at 50% 75%, #ffffff 15%, #ffe066 45%, #ff8800 80%, transparent 100%);
-      border-radius: 50% 50% 35% 35%;
-      box-shadow: 0 0 25px #ffae00, 0 0 60px #ff7300;
-      position: relative;
-      z-index: 5;
-      transform-origin: 50% 90%;
-      animation: realFlicker 0.14s ease-in-out infinite alternate;
+    /* حركة اللهب الواقعية فوق رقم 19 */
+    .flame-19 {
+      transform-origin: center bottom;
+      animation: flicker19 0.14s ease-in-out infinite alternate;
       transition: all 0.45s ease;
     }
-    .real-flame.out {
-      opacity: 0;
-      transform: scale(0) translateY(-20px);
+    .flame-19.out {
+      opacity: 0 !important;
+      transform: scale(0) translateY(-15px);
     }
-    @keyframes realFlicker {
-      0% { transform: rotate(-2deg) scaleY(0.96); }
-      100% { transform: rotate(2deg) scaleY(1.04); }
-    }
-
-    .wick {
-      width: 3px; height: 10px;
-      background: #222;
-      margin-top: -2px;
-      z-index: 4;
-    }
-    .wax-body {
-      width: 46px; height: 115px;
-      background: linear-gradient(90deg, #e8dfd5, #ffffff 45%, #d5c7b8);
-      border-radius: 8px 8px 4px 4px;
-      box-shadow: inset 0 8px 15px rgba(255, 190, 90, 0.45), 0 12px 30px rgba(0,0,0,0.8);
-      position: relative;
-    }
-    .gold-holder {
-      width: 90px; height: 12px;
-      background: linear-gradient(90deg, #9c732b, var(--gold-light), #9c732b);
-      border-radius: 20px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.9);
+    @keyframes flicker19 {
+      0% { transform: rotate(-3deg) scaleY(0.95); }
+      100% { transform: rotate(3deg) scaleY(1.05); }
     }
 
     /* موجات المايكروفون */
@@ -533,23 +486,32 @@
       align-items: flex-end;
       justify-content: center;
       gap: 5px;
-      height: 32px;
-      margin-top: 22px;
+      height: 34px;
+      margin-top: 10px;
     }
     .mic-bar {
-      width: 5px; height: 6px;
+      width: 5.5px; height: 6px;
       border-radius: 4px;
-      background: var(--gold);
+      background: linear-gradient(to top, var(--gold), var(--rose));
       box-shadow: 0 0 8px var(--gold);
-      transition: height 0.06s ease;
+      transition: height 0.05s ease;
     }
 
-    /* الظرف المختوم والرسالة الختامية */
+    .touch-warning {
+      font-size: 0.82rem;
+      color: var(--rose-soft);
+      margin-top: 8px;
+      min-height: 20px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    /* الرسالة النهائية الفخمة */
     .final-letter-card {
       display: none;
       width: 100%;
       max-width: 430px;
-      background: rgba(18, 12, 22, 0.9);
+      background: rgba(18, 12, 22, 0.92);
       backdrop-filter: blur(25px);
       border: 1px solid var(--gold);
       border-radius: 28px;
@@ -593,35 +555,24 @@
 </head>
 <body>
 
-  <!-- موسيقى بيانو دافئة وراقية (تعمل تلقائياً مع لمس البصمة أو ملف music.mp3) -->
+  <!-- موسيقى بيانو سينمائية جديدة وهادئة تعمل تلقائياً مع فتح البصمة بدون أي مربع علوي -->
   <audio id="bgMusic" loop preload="auto">
     <source src="music.mp3" type="audio/mpeg">
-    <source src="https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3" type="audio/mpeg">
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3" type="audio/mpeg">
+    <source src="https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- إضاءة خلفية ناعمة -->
   <div class="ambient-light">
     <div class="orb-glow orb-1"></div>
     <div class="orb-glow orb-2"></div>
   </div>
 
-  <!-- الشريط العلوي -->
-  <nav class="top-nav">
-    <div class="brand-tag">Haneen ✨</div>
-    <div class="progress-pills">
-      <div class="p-pill active" id="pill1"></div>
-      <div class="p-pill" id="pill2"></div>
-      <div class="p-pill" id="pill3"></div>
-      <div class="p-pill" id="pill4"></div>
-      <div class="p-pill" id="pill5"></div>
-    </div>
-    <button class="vinyl-btn" id="vinylBtn" onclick="toggleMusic()">
-      <span class="vinyl-disc"></span>
-      <span id="musicLabel">الموسيقى</span>
-    </button>
-  </nav>
+  <!-- اسم حنين فقط في الأعلى بدون خطوط تنقل أو مربع موسيقى -->
+  <div class="top-brand-only">
+    <span class="brand-tag">Haneen ✨</span>
+  </div>
 
-  <!-- ==================== الفصل 1: البداية والبصمة الدافئة ==================== -->
+  <!-- ==================== الفصل 1: البصمة ==================== -->
   <section class="chapter active" id="chap1">
     <div class="chapter-label">PRIVATE EDITION</div>
     <h1 class="chapter-title">إلى حنين.. في يوم ميلادك</h1>
@@ -655,7 +606,7 @@
     <span style="font-size:0.85rem; color:var(--gold);">اضغطي مطولاً للفتح ✨</span>
   </section>
 
-  <!-- ==================== الفصل 2: كروت الملاحظات (لمسة طب بشري راقية) ==================== -->
+  <!-- ==================== الفصل 2: كروت الملاحظات الطبية ==================== -->
   <section class="chapter" id="chap2">
     <div class="chapter-label">CLINICAL NOTES</div>
     <h2 class="chapter-title">ملاحظات خارج منهج الطب</h2>
@@ -681,17 +632,16 @@
     </div>
   </section>
 
-  <!-- ==================== الفصل 3: الصور الحقيقية القابلة للقلب (3D Flip Polaroids) ==================== -->
+  <!-- ==================== الفصل 3: الصور (لا يظهر زر الانتقال إلا بعد رؤية الـ 4 صور) ==================== -->
   <section class="chapter" id="chap3">
     <div class="chapter-label">MEMORIES ARCHIVE</div>
     <h2 class="chapter-title">لقطاتنا وكواليسها 📸</h2>
-    <p class="chapter-sub" style="margin-bottom:10px;">
-      اضغطي على الصورة عشان **تقلبيها على ظهرها** وتقرأي اللي مكتوب وراها:
+    <p class="chapter-sub" style="margin-bottom:8px;">
+      اضغطي على الصورة عشان <strong style="color:var(--gold);">تقلبيها على ظهرها</strong> وتقرأي اللي مكتوب وراها:
     </p>
 
     <div class="polaroid-scene" onclick="flipPolaroid()">
       <div class="polaroid-inner" id="polaroidCard">
-        <!-- وجه الصورة -->
         <div class="polaroid-face polaroid-front">
           <div class="pol-img" id="polImgBox" style="background-image: url('photo1.jpg'), linear-gradient(135deg, #2b1055, #d52d58);">
             <span style="font-size:2.4rem; opacity:0.35;">📸</span>
@@ -702,7 +652,6 @@
           </div>
         </div>
 
-        <!-- ظهر الصورة المكتوب عليه -->
         <div class="polaroid-face polaroid-back">
           <div style="color:var(--gold); font-size:1.4rem; margin-bottom:10px;">❝</div>
           <p class="back-quote" id="polBackText">
@@ -719,328 +668,4 @@
       <button class="btn-step" onclick="changePhoto(1)">التالية ←</button>
     </div>
 
-    <button class="btn-luxury" onclick="goToChapter(4)">إضاءة أمنيات سنتك الجديدة ✨</button>
-  </section>
-
-  <!-- ==================== الفصل 4: أمنيات السنة الجديدة المضيئة ==================== -->
-  <section class="chapter" id="chap4">
-    <div class="chapter-label">NEW YEAR WISHES</div>
-    <h2 class="chapter-title">3 أمنيات لسنتك الجديدة</h2>
-    <p class="chapter-sub" style="margin-bottom:16px;">
-      المسى النجوم الـ 3 بالترتيب عشان تنوري أمنيات يوم ميلادك:
-    </p>
-
-    <div class="lanterns-grid">
-      <div class="wish-item" onclick="lightWish(this, 1)">
-        <div class="wish-star">☆</div>
-        <div class="wish-text">سنة تشبه جمال روحك، مليانة راحة بال ونجاح في كل خطوة بتتمنيها.</div>
-      </div>
-
-      <div class="wish-item" onclick="lightWish(this, 2)">
-        <div class="wish-star">☆</div>
-        <div class="wish-text">تفضل ضحكتك هي العادة الثابتة اللي بتنور أيامك وأيام اللي حواليكي.</div>
-      </div>
-
-      <div class="wish-item" onclick="lightWish(this, 3)">
-        <div class="wish-star">☆</div>
-        <div class="wish-text">نكمل سوا خروجاتنا وذكرياتنا الحلوة، وتكون كل سنة جاية أروق وأجمل من اللي قبلها.</div>
-      </div>
-    </div>
-
-    <button class="btn-luxury" id="toCandleBtn" style="display:none;" onclick="goToChapter(5)">
-      اللحظة الأخيرة: شمعة عيد ميلادك 🕯️
-    </button>
-  </section>
-
-  <!-- ==================== الفصل 5: الشمعة الواقعية والنفخ في المايكروفون والرسالة ==================== -->
-  <section class="chapter" id="chap5">
-    <div id="candleSection">
-      <div class="chapter-label">MAKE A WISH</div>
-      <h2 class="chapter-title">اتمني أمنية يا حنين ✨</h2>
-      <p class="chapter-sub" style="margin-bottom:18px;">
-        انفخي في المايكروفون بتاع الموبايل (أو المسى لهب الشمعة) عشان تطفيها وتفتحي رسالتك!
-      </p>
-
-      <div class="candle-stage-wrap" onclick="extinguishFlame()">
-        <div class="candle-aura" id="candleAura"></div>
-        <div class="real-flame" id="realFlame"></div>
-        <div class="wick"></div>
-        <div class="wax-body"></div>
-        <div class="gold-holder"></div>
-
-        <div class="mic-eq-box">
-          <div class="mic-bar"></div><div class="mic-bar"></div><div class="mic-bar"></div>
-          <div class="mic-bar"></div><div class="mic-bar"></div><div class="mic-bar"></div>
-          <div class="mic-bar"></div><div class="mic-bar"></div><div class="mic-bar"></div>
-        </div>
-        <span style="font-size:0.78rem; color:var(--gold); margin-top:8px;">🎤 مؤشر المايكروفون</span>
-      </div>
-    </div>
-
-    <!-- الرسالة النهائية الفخمة -->
-    <div class="final-letter-card" id="finalLetterCard">
-      <div class="letter-header">
-        <span class="letter-title">كل سنة وأنتِ طيبة يا حنين ❤️</span>
-        <span style="color:var(--gold); font-family:'Playfair Display';">Rx // Special</span>
-      </div>
-      <div class="letter-body" id="typewriterBox"></div>
-      <div class="letter-sign">Happy Birthday, Haneen ✨🩺</div>
-    </div>
-  </section>
-
-  <script>
-    // ================= 1. الصوت والموسيقى =================
-    const bgMusic = document.getElementById('bgMusic');
-    const vinylBtn = document.getElementById('vinylBtn');
-    let musicPlaying = false;
-
-    function toggleMusic() {
-      if (musicPlaying) {
-        bgMusic.pause();
-        musicPlaying = false;
-        vinylBtn.classList.remove('playing');
-      } else {
-        bgMusic.volume = 0.65;
-        bgMusic.play().then(() => {
-          musicPlaying = true;
-          vinylBtn.classList.add('playing');
-        }).catch(() => {});
-      }
-    }
-
-    function haptic(ms = 35) {
-      if (navigator.vibrate) navigator.vibrate(ms);
-    }
-
-    // ================= 2. التنقل بين الفصول =================
-    function goToChapter(num) {
-      haptic(30);
-      document.querySelectorAll('.chapter').forEach(c => c.classList.remove('active'));
-      document.getElementById('chap' + num).classList.add('active');
-
-      document.querySelectorAll('.p-pill').forEach((p, i) => {
-        p.classList.toggle('active', i < num);
-      });
-
-      if (num === 5) initMicListener();
-    }
-
-    // ================= 3. الفصل 1: فتح البصمة =================
-    let holdTimer = null;
-    let holdProgress = 0;
-    let unlocked = false;
-
-    function startUnlock(e) {
-      if (e) e.preventDefault();
-      if (unlocked) return;
-      if (!musicPlaying) toggleMusic();
-      haptic([30, 60, 30]);
-
-      const gate = document.getElementById('touchGate');
-      const bar = document.getElementById('unlockBar');
-      gate.classList.add('holding');
-
-      clearInterval(holdTimer);
-      holdTimer = setInterval(() => {
-        holdProgress += 5;
-        const offset = 390 - (390 * holdProgress) / 100;
-        bar.style.strokeDashoffset = Math.max(0, offset);
-
-        if (holdProgress >= 100) {
-          clearInterval(holdTimer);
-          unlocked = true;
-          haptic(100);
-          goToChapter(2);
-        }
-      }, 35);
-    }
-
-    function cancelUnlock() {
-      if (unlocked) return;
-      clearInterval(holdTimer);
-      document.getElementById('touchGate').classList.remove('holding');
-      holdProgress = 0;
-      document.getElementById('unlockBar').style.strokeDashoffset = 390;
-    }
-
-    // ================= 4. الفصل 2: كروت الملاحظات الطبية الراقية =================
-    const clinicalNotes = [
-      {
-        title: "الملاحظة الأولى 🩺",
-        text: "في الكلية بيعلمونا إن كل حاجة في الجسم ليها سبب ونتيجة ومعادلة محفوظة.. بس الحقيقة إن الراحة والهدوء اللي بيحصلوا لما بنتكلم كسروا كل القواعد دي من غير أي مجهود."
-      },
-      {
-        title: "الملاحظة التانية ⚡",
-        text: "أهم عرض جانبي لاحظته: إن أي يوم مهما كان زحمة أو متعب، بيتصلح موده تماماً بمجرد ما بننزل سوا أو نتكلم."
-      },
-      {
-        title: "الملاحظة التالتة ☕",
-        text: "الموضوع عمره ما كان بعدد الأيام ولا بنعرف بعض من إمتى.. في ناس بتدخل حياتك تثبت مكانها بهدوء ومن أول لحظة، وأنتِ على راسهم."
-      },
-      {
-        title: "التشخيص النهائي ✨",
-        text: "خلاصة الكشف: ضحكتك وتفاصيلك مكسب كبير ميتعوضش.. ووجودك ثابت وأساسي في كل الأيام الجاية."
-      }
-    ];
-    let curNote = 0;
-
-    function updateNoteView() {
-      document.getElementById('noteBadgeTitle').innerText = clinicalNotes[curNote].title;
-      document.getElementById('noteStepCount').innerText = `${curNote + 1} / 4`;
-      document.getElementById('noteContent').innerText = clinicalNotes[curNote].text;
-
-      const nextBtn = document.getElementById('nextNoteBtn');
-      if (curNote === clinicalNotes.length - 1) {
-        nextBtn.innerText = "ألبوم ذكرياتنا 📸 ←";
-      } else {
-        nextBtn.innerText = "الملاحظة التالية ←";
-      }
-    }
-
-    function nextNote() {
-      haptic(25);
-      if (curNote < clinicalNotes.length - 1) {
-        curNote++;
-        updateNoteView();
-      } else {
-        goToChapter(3);
-      }
-    }
-
-    function prevNote() {
-      haptic(25);
-      if (curNote > 0) {
-        curNote--;
-        updateNoteView();
-      }
-    }
-
-    // ================= 5. الفصل 3: الصور القابلة للقلب (3D Flip Polaroids) =================
-    const photosList = [
-      {
-        img: "url('photo1.jpg'), linear-gradient(135deg, #2b1055, #d52d58)",
-        title: "اللقطة الأولى ✨",
-        back: "من البداية وكان واضح إنك شخص مختلف.. حضورك بيخلي لأي مكان ولأي وقت طعم تاني خالص."
-      },
-      {
-        img: "url('photo2.jpg'), linear-gradient(135deg, #0f2027, #2c5364)",
-        title: "خروجاتنا سوا ☕",
-        back: "الوقت وإحنا قاعدين سوا بيمشي بقانون تاني.. الساعات بتعدي كأنها دقايق من غير ما نحس بيها."
-      },
-      {
-        img: "url('photo3.jpg'), linear-gradient(135deg, #1f1c2c, #928dab)",
-        title: "أحلى ضحكة 📸",
-        back: "كل صورة اتصورناها شايلة وراها كواليس وضحكة حقيقية من القلب مبتتنسيش."
-      },
-      {
-        img: "url('photo4.jpg'), linear-gradient(135deg, #3a1c71, #d76d77)",
-        title: "اللي جاي أحلى ❤️",
-        back: "كل مرة بننزل فيها بتأكدلي إن وجودك في حياتي هو أحلى تفصيلة حصلت."
-      }
-    ];
-    let curPhoto = 0;
-
-    function flipPolaroid() {
-      haptic(30);
-      document.getElementById('polaroidCard').classList.toggle('flipped');
-    }
-
-    function changePhoto(dir) {
-      haptic(25);
-      const card = document.getElementById('polaroidCard');
-      card.classList.remove('flipped');
-
-      setTimeout(() => {
-        curPhoto = (curPhoto + dir + photosList.length) % photosList.length;
-        document.getElementById('polImgBox').style.backgroundImage = photosList[curPhoto].img;
-        document.getElementById('polFrontTitle').innerText = photosList[curPhoto].title;
-        document.getElementById('polBackText').innerText = photosList[curPhoto].back;
-        document.getElementById('photoCounterTxt').innerText = `${curPhoto + 1} / ${photosList.length}`;
-      }, 150);
-    }
-
-    // ================= 6. الفصل 4: إضاءة أمنيات العام الجديد =================
-    let litWishes = new Set();
-    function lightWish(el, id) {
-      haptic(35);
-      el.classList.add('lit');
-      el.querySelector('.wish-star').innerText = '★';
-      litWishes.add(id);
-
-      if (litWishes.size >= 3) {
-        document.getElementById('toCandleBtn').style.display = 'inline-block';
-      }
-    }
-
-    // ================= 7. الفصل 5: الشمعة الواقعية والمايكروفون والرسالة =================
-    let flameOut = false;
-    const finalMessage = "كل سنة وأنتِ طيبة يا حنين.. حبيت أعملك حاجة هادية ومختلفة تشبهك وتفضل ذكرى مميزة بينا. وجودك في حياتي، خروجاتنا، وكل تفصيلة بنعيشها سوا ليها مكانة كبيرة عندي. بتمنالك سنة جديدة مليانة نجاح وراحة بال، وتفضلي دايماً منورة أيامي بضحكتك وبروحك الحلوة. عيد ميلاد سعيد! ❤️✨";
-
-    function extinguishFlame() {
-      if (flameOut) return;
-      flameOut = true;
-      haptic([70, 50, 120]);
-
-      document.getElementById('realFlame').classList.add('out');
-      document.getElementById('candleAura').classList.add('out');
-
-      confetti({
-        particleCount: 140,
-        spread: 90,
-        origin: { y: 0.6 },
-        colors: ['#e6c17a', '#e05780', '#ffffff', '#f9e2b3']
-      });
-
-      setTimeout(() => {
-        document.getElementById('candleSection').style.display = 'none';
-        const letter = document.getElementById('finalLetterCard');
-        letter.style.display = 'block';
-
-        let i = 0;
-        const box = document.getElementById('typewriterBox');
-        function typeWriter() {
-          if (i < finalMessage.length) {
-            box.innerHTML += finalMessage.charAt(i);
-            i++;
-            setTimeout(typeWriter, 38);
-          }
-        }
-        typeWriter();
-      }, 1000);
-    }
-
-    function initMicListener() {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
-      navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(stream => {
-        const aCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const src = aCtx.createMediaStreamSource(stream);
-        const analyser = aCtx.createAnalyser();
-        analyser.fftSize = 64;
-        src.connect(analyser);
-        const data = new Uint8Array(analyser.frequencyBinCount);
-        const bars = document.querySelectorAll('.mic-bar');
-
-        function updateMic() {
-          if (flameOut) return;
-          analyser.getByteFrequencyData(data);
-          let sum = 0;
-          bars.forEach((bar, idx) => {
-            const val = data[idx] || 0;
-            sum += val;
-            const h = Math.max(6, Math.min(32, (val / 255) * 36));
-            bar.style.height = h + 'px';
-          });
-
-          if (sum / bars.length > 44) {
-            extinguishFlame();
-            stream.getTracks().forEach(t => t.stop());
-          } else {
-            requestAnimationFrame(updateMic);
-          }
-        }
-        updateMic();
-      }).catch(() => {});
-    }
-  </script>
-</body>
-</html>
+    <div class="seen-status" id="seenStatusTxt">شوفي الـ 4 لقطات كلهم عشان تفتحي المرحلة الجاية (1/4
