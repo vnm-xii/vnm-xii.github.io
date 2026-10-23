@@ -157,6 +157,10 @@
       align-items: center;
       cursor: pointer;
       margin: 15px 0 20px;
+      touch-action: none;
+    }
+    .touch-gate * {
+      pointer-events: none;
     }
     .ripple-ring {
       position: absolute;
@@ -581,9 +585,12 @@
     </p>
 
     <div class="touch-gate" id="touchGate"
-         onpointerdown="startUnlock(event)"
-         onpointerup="cancelUnlock()"
-         onpointerleave="cancelUnlock()">
+         ontouchstart="startUnlock(event)"
+         ontouchend="cancelUnlock()"
+         ontouchcancel="cancelUnlock()"
+         onmousedown="startUnlock(event)"
+         onmouseup="cancelUnlock()"
+         oncontextmenu="return false;">
       <div class="ripple-ring"></div>
       <div class="ripple-ring"></div>
       <svg class="progress-svg" viewBox="0 0 135 135">
@@ -664,8 +671,4 @@
 
     <div class="gallery-controls">
       <button class="btn-step" onclick="changePhoto(-1)">→ السابقة</button>
-      <span id="photoCounterTxt" style="color:var(--gold); font-weight:700; min-width:55px;">1 / 4</span>
-      <button class="btn-step" onclick="changePhoto(1)">التالية ←</button>
-    </div>
-
-    <div class="seen-status" id="seenStatusTxt">شوفي الـ 4 لقطات كلهم عشان تفتحي المرحلة الجاية (1/4
+      <span id="photoCounterTxt" style="color:var(--gold); font-weight:700; min-width:55px;">1 / 4<
