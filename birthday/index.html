@@ -148,31 +148,29 @@
     }
     .btn-luxury:active { transform: scale(0.95); }
 
-    /* ==================== الفصل 1: البصمة ==================== */
+    /* ==================== الفصل 1: البصمة الجديدة ==================== */
     .touch-gate {
       position: relative;
-      width: 135px; height: 135px;
+      width: 148px; height: 148px;
       display: flex;
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      margin: 15px 0 20px;
-      touch-action: none;
-    }
-    .touch-gate * {
-      pointer-events: none;
+      margin: 12px 0 16px;
+      -webkit-touch-callout: none;
     }
     .ripple-ring {
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      border: 1px solid rgba(230, 193, 122, 0.3);
-      animation: rippleOut 2.6s ease-out infinite;
+      border: 1px solid rgba(230, 193, 122, 0.35);
+      pointer-events: none;
+      animation: rippleOut 2.4s ease-out infinite;
     }
-    .ripple-ring:nth-child(2) { animation-delay: 1.3s; }
+    .ripple-ring:nth-child(2) { animation-delay: 1.2s; }
     @keyframes rippleOut {
-      0% { transform: scale(0.85); opacity: 0.8; }
-      100% { transform: scale(1.45); opacity: 0; }
+      0% { transform: scale(0.85); opacity: 0.85; }
+      100% { transform: scale(1.42); opacity: 0; }
     }
 
     .progress-svg {
@@ -180,38 +178,71 @@
       inset: 0;
       width: 100%; height: 100%;
       transform: rotate(-90deg);
+      pointer-events: none;
     }
     .prog-track { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 2.5; }
     .prog-bar {
       fill: none;
       stroke: var(--gold);
-      stroke-width: 3.5;
+      stroke-width: 4;
       stroke-linecap: round;
       stroke-dasharray: 390;
       stroke-dashoffset: 390;
-      transition: stroke-dashoffset 0.08s linear;
+      transition: stroke-dashoffset 0.05s linear;
       filter: drop-shadow(0 0 8px var(--gold));
     }
 
     .fp-button {
-      width: 86px; height: 86px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(230, 193, 122, 0.16), rgba(255,255,255,0.02));
-      border: 1px solid var(--glass-border);
+      width: 96px; height: 96px;
+      border-radius: 28px;
+      background: linear-gradient(145deg, rgba(230, 193, 122, 0.18), rgba(224, 87, 128, 0.08));
+      border: 1.5px solid rgba(230, 193, 122, 0.45);
+      box-shadow: 0 0 25px rgba(230, 193, 122, 0.18), inset 0 0 15px rgba(230, 193, 122, 0.12);
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      transition: transform 0.3s, background 0.3s;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
     }
     .fp-button svg {
       width: 42px; height: 42px;
       stroke: var(--gold-light);
-      stroke-width: 1.6;
+      stroke-width: 1.7;
       fill: none;
+      transition: stroke 0.3s;
+    }
+    .fp-laser {
+      position: absolute;
+      left: 0; right: 0; top: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold-light), var(--rose), transparent);
+      box-shadow: 0 0 12px var(--gold);
+      opacity: 0;
+    }
+    .fp-percent {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--gold-light);
+      margin-top: 5px;
+      letter-spacing: 0.5px;
     }
     .holding .fp-button {
-      transform: scale(0.93);
-      background: radial-gradient(circle, rgba(224, 87, 128, 0.28), rgba(230, 193, 122, 0.1));
+      transform: scale(0.95);
+      border-color: var(--rose-soft);
+      box-shadow: 0 0 35px rgba(224, 87, 128, 0.45), inset 0 0 20px rgba(230, 193, 122, 0.25);
+    }
+    .holding .fp-button svg {
+      stroke: #fff;
+    }
+    .holding .fp-laser {
+      opacity: 1;
+      animation: laserScan 0.7s ease-in-out infinite alternate;
+    }
+    @keyframes laserScan {
+      0% { top: 8%; }
+      100% { top: 88%; }
     }
 
     /* ==================== الفصل 2: كروت الملاحظات ==================== */
@@ -581,16 +612,13 @@
     <div class="chapter-label">PRIVATE EDITION</div>
     <h1 class="chapter-title">إلى حنين.. في يوم ميلادك</h1>
     <p class="chapter-sub">
-      في تفاصيل مبيتشرحش جمالها بكلام عادي.. حطي صباعك مطولاً على البصمة عشان تفتحي المساحة الخاصة بيكي.
+      في تفاصيل مبيتشرحش جمالها بكلام عادي.. حطي صباعك على البصمة عشان تفتحي المساحة الخاصة بيكي.
     </p>
 
     <div class="touch-gate" id="touchGate"
+         onclick="startUnlock(event)"
          ontouchstart="startUnlock(event)"
-         ontouchend="cancelUnlock()"
-         ontouchcancel="cancelUnlock()"
-         onmousedown="startUnlock(event)"
-         onmouseup="cancelUnlock()"
-         oncontextmenu="return false;">
+         onpointerdown="startUnlock(event)">
       <div class="ripple-ring"></div>
       <div class="ripple-ring"></div>
       <svg class="progress-svg" viewBox="0 0 135 135">
@@ -598,19 +626,23 @@
         <circle class="prog-bar" id="unlockBar" cx="67.5" cy="67.5" r="62"></circle>
       </svg>
       <div class="fp-button">
+        <div class="fp-laser"></div>
         <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4"></path>
-          <path d="M5 19.5C5.5 18 6 15 6 12c0-.7.12-1.37.34-2"></path>
-          <path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"></path>
           <path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"></path>
-          <path d="M8.65 22c.21-.66.45-1.32.57-2"></path>
           <path d="M14 13.12c0 2.38 0 6.38-1 8.88"></path>
-          <path d="M9 6.8a6 6 0 0 1 9 5.2c0 .47 0 1.17-.02 2"></path>
+          <path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"></path>
+          <path d="M2 12a10 10 0 0 1 18-6"></path>
+          <path d="M2 16h.01"></path>
+          <path d="M21.8 16c.2-2 .131-5.354 0-6"></path>
+          <path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"></path>
+          <path d="M8.65 22c.21-.66.45-1.32.57-2"></path>
+          <path d="M9 6.8a6 6 0 0 1 9 5.2v2"></path>
         </svg>
+        <span class="fp-percent" id="fpPercentTxt">المسي للفتح</span>
       </div>
     </div>
 
-    <span style="font-size:0.85rem; color:var(--gold);">اضغطي مطولاً للفتح ✨</span>
+    <span id="fpStatusHint" style="font-size:0.85rem; color:var(--gold);">المسي البصمة لبدء الفحص والفتح ✨</span>
   </section>
 
   <!-- ==================== الفصل 2: كروت الملاحظات الطبية ==================== -->
@@ -650,25 +682,4 @@
     <div class="polaroid-scene" onclick="flipPolaroid()">
       <div class="polaroid-inner" id="polaroidCard">
         <div class="polaroid-face polaroid-front">
-          <div class="pol-img" id="polImgBox" style="background-image: url('photo1.jpg'), linear-gradient(135deg, #2b1055, #d52d58);">
-            <span style="font-size:2.4rem; opacity:0.35;">📸</span>
-          </div>
-          <div class="pol-front-caption">
-            <span id="polFrontTitle">اللقطة الأولى ✨</span>
-            <span style="font-size:0.8rem; color:#888;">اضغطي لقلب الصورة ↺</span>
-          </div>
-        </div>
-
-        <div class="polaroid-face polaroid-back">
-          <div style="color:var(--gold); font-size:1.4rem; margin-bottom:10px;">❝</div>
-          <p class="back-quote" id="polBackText">
-            من البداية وكان واضح إنك شخص مختلف.. حضورك بيخلي لأي مكان ولأي وقت طعم تاني خالص.
-          </p>
-          <span class="back-hint">اضغطي للعودة للصورة ↻</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="gallery-controls">
-      <button class="btn-step" onclick="changePhoto(-1)">→ السابقة</button>
-      <span id="photoCounterTxt" style="color:var(--gold); font-weight:700; min-width:55px;">1 / 4<
+          <
