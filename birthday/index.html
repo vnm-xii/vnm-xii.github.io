@@ -35,7 +35,6 @@
       color: var(--text-main);
       font-family: 'Tajawal', sans-serif;
       position: relative;
-      touch-action: none;
     }
 
     /* إضاءة خلفية ناعمة */
@@ -149,71 +148,96 @@
     }
     .btn-luxury:active { transform: scale(0.95); }
 
-    /* ==================== الفصل 1: البصمة الدائرية الأصلية ==================== */
-    .touch-gate {
+    /* ==================== الفصل 1: الظرف الملكي وختم الشمع الذهبي التفاعلي ==================== */
+    .royal-envelope-box {
       position: relative;
-      width: 135px; height: 135px;
+      width: 100%;
+      max-width: 340px;
+      background: linear-gradient(145deg, rgba(34, 18, 40, 0.9), rgba(16, 9, 20, 0.95));
+      border: 1px solid var(--glass-border);
+      border-radius: 26px;
+      padding: 28px 20px 24px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), inset 0 0 30px rgba(230, 193, 122, 0.06);
+      margin: 8px 0 18px;
+      overflow: hidden;
+      transition: transform 0.6s ease, opacity 0.6s ease;
+    }
+    .royal-envelope-box::before {
+      content: '';
+      position: absolute;
+      top: -65px; left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      width: 150px; height: 150px;
+      background: linear-gradient(135deg, rgba(230, 193, 122, 0.14), rgba(224, 87, 128, 0.08));
+      border-bottom: 1px solid rgba(230, 193, 122, 0.35);
+      border-right: 1px solid rgba(230, 193, 122, 0.35);
+      border-radius: 14px;
+      pointer-events: none;
+    }
+    .wax-seal-center {
+      position: relative;
+      z-index: 2;
+      width: 78px; height: 78px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #f9e2b3, #d4a24c 55%, #8f6219 95%);
+      border: 2px solid #fff3d1;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7), 0 0 25px rgba(230, 193, 122, 0.45);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #2b1605;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.45rem;
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .wax-seal-center.broken {
+      transform: scale(1.25) rotate(15deg);
+      box-shadow: 0 0 45px var(--gold-light);
+    }
+    .seal-sparks-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 6px;
+      position: relative;
+      z-index: 3;
+    }
+    .seal-key-btn {
+      width: 58px; height: 58px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1.5px dashed rgba(230, 193, 122, 0.55);
+      color: var(--gold-light);
+      font-size: 1.35rem;
       display: flex;
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      margin: 15px 0 20px;
-      touch-action: none;
-      -webkit-touch-callout: none;
+      transition: all 0.3s ease;
+      animation: floatKey 1.8s ease-in-out infinite alternate;
     }
-    .ripple-ring {
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      border: 1px solid rgba(230, 193, 122, 0.3);
+    .seal-key-btn:nth-child(2) { animation-delay: 0.3s; }
+    .seal-key-btn:nth-child(3) { animation-delay: 0.6s; }
+    @keyframes floatKey {
+      from { transform: translateY(-3px); }
+      to { transform: translateY(4px); }
+    }
+    .seal-key-btn.activated {
+      background: linear-gradient(135deg, var(--rose), #9e1f47);
+      border-style: solid;
+      border-color: var(--gold-light);
+      box-shadow: 0 0 20px rgba(224, 87, 128, 0.7);
+      transform: scale(1.12);
+      animation: none;
+    }
+    .burst-petal {
+      position: fixed;
       pointer-events: none;
-      animation: rippleOut 2.6s ease-out infinite;
-    }
-    .ripple-ring:nth-child(2) { animation-delay: 1.3s; }
-    @keyframes rippleOut {
-      0% { transform: scale(0.85); opacity: 0.8; }
-      100% { transform: scale(1.45); opacity: 0; }
-    }
-
-    .progress-svg {
-      position: absolute;
-      inset: 0;
-      width: 100%; height: 100%;
-      transform: rotate(-90deg);
-      pointer-events: none;
-    }
-    .prog-track { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 2.5; }
-    .prog-bar {
-      fill: none;
-      stroke: var(--gold);
-      stroke-width: 3.5;
-      stroke-linecap: round;
-      stroke-dasharray: 390;
-      stroke-dashoffset: 390;
-      transition: stroke-dashoffset 0.04s linear;
-      filter: drop-shadow(0 0 8px var(--gold));
-    }
-
-    .fp-button {
-      width: 86px; height: 86px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(230, 193, 122, 0.16), rgba(255,255,255,0.02));
-      border: 1px solid var(--glass-border);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      pointer-events: none;
-      transition: transform 0.3s, background 0.3s;
-    }
-    .fp-button svg {
-      width: 42px; height: 42px;
-      stroke: var(--gold-light);
-      stroke-width: 1.6;
-      fill: none;
-    }
-    .holding .fp-button {
-      transform: scale(0.93);
-      background: radial-gradient(circle, rgba(224, 87, 128, 0.28), rgba(230, 193, 122, 0.1));
+      z-index: 9999;
+      font-size: 1.35rem;
     }
 
     /* ==================== الفصل 2: كروت الملاحظات ==================== */
@@ -576,7 +600,7 @@
 </head>
 <body>
 
-  <!-- موسيقى بيانو سينمائية هادئة تعمل تلقائياً فور لمس البصمة -->
+  <!-- موسيقى بيانو سينمائية هادئة تعمل تلقائياً مع فتح الختم الملكي -->
   <audio id="bgMusic" loop preload="auto">
     <source src="music.mp3" type="audio/mpeg">
     <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3" type="audio/mpeg">
@@ -593,39 +617,30 @@
     <span class="brand-tag">Haneen ✨</span>
   </div>
 
-  <!-- ==================== الفصل 1: البصمة الدائرية الأصلية ==================== -->
+  <!-- ==================== الفصل 1: الظرف الملكي وختم الشمع الذهبي التفاعلي ==================== -->
   <section class="chapter active" id="chap1">
     <div class="chapter-label">PRIVATE EDITION</div>
     <h1 class="chapter-title">إلى حنين.. في يوم ميلادك</h1>
     <p class="chapter-sub">
-      في تفاصيل مبيتشرحش جمالها بكلام عادي.. حطي صباعك مطولاً على البصمة عشان تفتحي المساحة الخاصة بيكي.
+      في تفاصيل مبيتشرحش جمالها بكلام عادي.. المسى الأختام الـ 3 بالأسفل عشان تكسري ختم الشمع الذهبي وتفتحي دعوتك الخاصة.
     </p>
 
-    <div class="touch-gate" id="touchGate"
-         onclick="startUnlock(event)"
-         ontouchstart="startUnlock(event)"
-         onpointerdown="startUnlock(event)"
-         oncontextmenu="return false;">
-      <div class="ripple-ring"></div>
-      <div class="ripple-ring"></div>
-      <svg class="progress-svg" viewBox="0 0 135 135">
-        <circle class="prog-track" cx="67.5" cy="67.5" r="62"></circle>
-        <circle class="prog-bar" id="unlockBar" cx="67.5" cy="67.5" r="62"></circle>
-      </svg>
-      <div class="fp-button">
-        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4"></path>
-          <path d="M5 19.5C5.5 18 6 15 6 12c0-.7.12-1.37.34-2"></path>
-          <path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"></path>
-          <path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"></path>
-          <path d="M8.65 22c.21-.66.45-1.32.57-2"></path>
-          <path d="M14 13.12c0 2.38 0 6.38-1 8.88"></path>
-          <path d="M9 6.8a6 6 0 0 1 9 5.2c0 .47 0 1.17-.02 2"></path>
-        </svg>
+    <div class="royal-envelope-box" id="royalEnvelope">
+      <div class="wax-seal-center" id="waxSeal">
+        <span>H</span>
+        <small style="font-size:0.55rem; letter-spacing:1px; margin-top:-4px;">19TH</small>
+      </div>
+      <p style="font-size:0.88rem; color:var(--gold-light); margin-bottom:14px;">
+        اضغطي على الـ 3 رموز لفتح الختم الملكي (<span id="sealCountTxt">0</span>/3)
+      </p>
+      <div class="seal-sparks-row">
+        <button type="button" class="seal-key-btn" onclick="activateSealKey(this, 1, event)">🌹</button>
+        <button type="button" class="seal-key-btn" onclick="activateSealKey(this, 2, event)">❤️</button>
+        <button type="button" class="seal-key-btn" onclick="activateSealKey(this, 3, event)">✨</button>
       </div>
     </div>
 
-    <span id="fpStatusHint" style="font-size:0.85rem; color:var(--gold);">اضغطي مطولاً للفتح ✨</span>
+    <span id="fpStatusHint" style="font-size:0.85rem; color:var(--gold);">المسي الوردة والقلب والنجمة للفتح ✨</span>
   </section>
 
   <!-- ==================== الفصل 2: كروت الملاحظات الطبية ==================== -->
@@ -659,20 +674,4 @@
     <div class="chapter-label">MEMORIES ARCHIVE</div>
     <h2 class="chapter-title">لقطاتنا وكواليسها 📸</h2>
     <p class="chapter-sub" style="margin-bottom:8px;">
-      اضغطي على الصورة عشان <strong style="color:var(--gold);">تقلبيها على ظهرها</strong> وتقرأي اللي مكتوب وراها:
-    </p>
-
-    <div class="polaroid-scene" onclick="flipPolaroid()">
-      <div class="polaroid-inner" id="polaroidCard">
-        <div class="polaroid-face polaroid-front">
-          <div class="pol-img" id="polImgBox" style="background-image: url('photo1.jpg'), linear-gradient(135deg, #2b1055, #d52d58);"></div>
-          <div class="pol-front-caption">
-            <span id="polFrontTitle">اللقطة الأولى ✨</span>
-            <span style="font-size:0.8rem; color:#888;">اضغطي لقلب الصورة ↺</span>
-          </div>
-        </div>
-
-        <div class="polaroid-face polaroid-back">
-          <div style="color:var(--gold); font-size:1.4rem; margin-bottom:10px;">❝</div>
-          <p class="back-quote" id="polBackText">
-            
+      اضغطي على الصورة عشان <strong style="color:var
