@@ -149,68 +149,57 @@
     }
     .btn-luxury:active { transform: scale(0.95); }
 
-    /* ==================== الفصل 1: البصمة الدائرية الأصلية ==================== */
-    .touch-gate {
+    /* ==================== الفصل 1: التمرير وتناثر القلوب والورود الحمراء ==================== */
+    .swipe-zone {
       position: relative;
-      width: 135px; height: 135px;
+      width: 100%;
+      max-width: 360px;
+      height: 190px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px dashed rgba(224, 87, 128, 0.45);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), inset 0 0 25px rgba(224, 87, 128, 0.08);
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
+      gap: 12px;
+      margin: 10px 0 18px;
+      overflow: hidden;
       cursor: pointer;
-      margin: 15px 0 20px;
+      touch-action: none;
     }
-    .ripple-ring {
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      border: 1px solid rgba(230, 193, 122, 0.3);
-      pointer-events: none;
-      animation: rippleOut 2.6s ease-out infinite;
-    }
-    .ripple-ring:nth-child(2) { animation-delay: 1.3s; }
-    @keyframes rippleOut {
-      0% { transform: scale(0.85); opacity: 0.8; }
-      100% { transform: scale(1.45); opacity: 0; }
-    }
-
-    .progress-svg {
-      position: absolute;
-      inset: 0;
-      width: 100%; height: 100%;
-      transform: rotate(-90deg);
+    .swipe-icon-anim {
+      font-size: 2.2rem;
+      animation: swipeHand 1.6s ease-in-out infinite alternate;
       pointer-events: none;
     }
-    .prog-track { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 2.5; }
-    .prog-bar {
-      fill: none;
-      stroke: var(--gold);
-      stroke-width: 3.5;
-      stroke-linecap: round;
-      stroke-dasharray: 390;
-      stroke-dashoffset: 390;
-      filter: drop-shadow(0 0 8px var(--gold));
+    @keyframes swipeHand {
+      0% { transform: translateX(-28px) rotate(-8deg); }
+      100% { transform: translateX(28px) rotate(8deg); }
     }
-
-    .fp-button {
-      width: 86px; height: 86px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(230, 193, 122, 0.16), rgba(255,255,255,0.02));
-      border: 1px solid var(--glass-border);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    .swipe-progress-track {
+      width: 75%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
       pointer-events: none;
-      transition: transform 0.3s, background 0.3s;
     }
-    .fp-button svg {
-      width: 42px; height: 42px;
-      stroke: var(--gold-light);
-      stroke-width: 1.6;
-      fill: none;
+    .swipe-progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #ff1e56, var(--gold));
+      box-shadow: 0 0 12px #ff1e56;
+      transition: width 0.1s ease;
     }
-    .holding .fp-button {
-      transform: scale(0.93);
-      background: radial-gradient(circle, rgba(224, 87, 128, 0.28), rgba(230, 193, 122, 0.1));
+    .burst-item {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999;
+      font-size: 1.25rem;
+      will-change: transform, opacity;
+      filter: drop-shadow(0 0 8px rgba(255, 30, 86, 0.6));
     }
 
     /* ==================== الفصل 2: كروت الملاحظات ==================== */
@@ -558,7 +547,7 @@
 </head>
 <body>
 
-  <!-- موسيقى بيانو سينمائية جديدة وهادئة تعمل تلقائياً مع فتح البصمة بدون أي مربع علوي -->
+  <!-- موسيقى بيانو سينمائية جديدة وهادئة تعمل تلقائياً مع التمرير بدون أي مربع علوي -->
   <audio id="bgMusic" loop preload="auto">
     <source src="music.mp3" type="audio/mpeg">
     <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3" type="audio/mpeg">
@@ -575,39 +564,25 @@
     <span class="brand-tag">Haneen ✨</span>
   </div>
 
-  <!-- ==================== الفصل 1: البصمة ==================== -->
+  <!-- ==================== الفصل 1: التمرير وتناثر القلوب والورود الحمراء ==================== -->
   <section class="chapter active" id="chap1">
     <div class="chapter-label">PRIVATE EDITION</div>
     <h1 class="chapter-title">إلى حنين.. في يوم ميلادك</h1>
     <p class="chapter-sub">
-      في تفاصيل مبيتشرحش جمالها بكلام عادي.. حطي صباعك مطولاً على البصمة عشان تفتحي المساحة الخاصة بيكي.
+      في تفاصيل مبيتشرحش جمالها بكلام عادي.. حركي صباعك على الشاشة عشان تنثري الورد والقلوب وتفتحي المساحة الخاصة بيكي.
     </p>
 
-    <div class="touch-gate" id="touchGate"
-         onpointerdown="startUnlock(event)"
-         onpointerup="cancelUnlock()"
-         onpointercancel="cancelUnlock()"
-         oncontextmenu="return false;">
-      <div class="ripple-ring"></div>
-      <div class="ripple-ring"></div>
-      <svg class="progress-svg" viewBox="0 0 135 135">
-        <circle class="prog-track" cx="67.5" cy="67.5" r="62"></circle>
-        <circle class="prog-bar" id="unlockBar" cx="67.5" cy="67.5" r="62"></circle>
-      </svg>
-      <div class="fp-button">
-        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4"></path>
-          <path d="M5 19.5C5.5 18 6 15 6 12c0-.7.12-1.37.34-2"></path>
-          <path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"></path>
-          <path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"></path>
-          <path d="M8.65 22c.21-.66.45-1.32.57-2"></path>
-          <path d="M14 13.12c0 2.38 0 6.38-1 8.88"></path>
-          <path d="M9 6.8a6 6 0 0 1 9 5.2c0 .47 0 1.17-.02 2"></path>
-        </svg>
+    <div class="swipe-zone" id="swipeZone">
+      <div class="swipe-icon-anim">🌹 ❤️ ✨</div>
+      <span style="font-size:0.92rem; color:var(--text-main); font-weight:700; pointer-events:none;">
+        المسي وحركي صباعك هنا للفتح
+      </span>
+      <div class="swipe-progress-track">
+        <div class="swipe-progress-fill" id="swipeFill"></div>
       </div>
     </div>
 
-    <span style="font-size:0.85rem; color:var(--gold);">اضغطي مطولاً للفتح ✨</span>
+    <span style="font-size:0.85rem; color:var(--gold);">تمريرة بسيطة تفتح عالمك ✨</span>
   </section>
 
   <!-- ==================== الفصل 2: كروت الملاحظات الطبية ==================== -->
@@ -669,4 +644,27 @@
     <div class="gallery-controls">
       <button class="btn-step" onclick="changePhoto(-1)">→ السابقة</button>
       <span id="photoCounterTxt" style="color:var(--gold); font-weight:700; min-width:55px;">1 / 4</span>
-      <button class="btn-step" onclick="changePhoto(1)">التالية ←</but
+      <button class="btn-step" onclick="changePhoto(1)">التالية ←</button>
+    </div>
+
+    <div class="seen-status" id="seenStatusTxt">شوفي الـ 4 لقطات كلهم عشان تفتحي المرحلة الجاية (1/4)</div>
+
+    <button class="btn-luxury" id="toChapter4Btn" style="display:none;" onclick="goToChapter(4)">
+      إضاءة أمنياتي ليكي ✨
+    </button>
+  </section>
+
+  <!-- ==================== الفصل 4: الأمنيات (مع كلمة "أتمنى لكِ" وصوت سحري لكل ضغطة) ==================== -->
+  <section class="chapter" id="chap4">
+    <div class="chapter-label">BIRTHDAY WISHES FOR YOU</div>
+    <h2 class="chapter-title">3 أمنيات بتمنهالك في سنتك الـ 19</h2>
+    <p class="chapter-sub" style="margin-bottom:14px;">
+      المسى النجوم الـ 3 بالترتيب عشان تنوري الأمنيات اللي بتمنهالك من قلبي:
+    </p>
+
+    <div class="lanterns-grid">
+      <div class="wish-item" onclick="lightWish(this, 1)">
+        <div class="wish-star">☆</div>
+        <div class="wish-text">
+          <span class="wish-prefix">أتمنى لكِ</span> سنة تشبه جمال روحك، مليانة راحة بال ونجاح في كل خطوة بتتمنيها.
+        <
