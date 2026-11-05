@@ -4,76 +4,109 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Haneen | 19th Birthday ✨</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Amiri:ital,wght@0,700;1,700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap');
 
     :root {
       --bg-dark: #07050a;
-      --bg-warm: #1a0c20;
+      --bg-warm: #180c1c;
       --gold: #e6c17a;
       --gold-light: #f9e2b3;
       --rose: #e05780;
       --rose-soft: #f497b6;
-      --card-bg: #150d1a;
-      --border-gold: rgba(230, 193, 122, 0.3);
+      --glass: rgba(255, 255, 255, 0.045);
+      --glass-border: rgba(230, 193, 122, 0.24);
       --text-main: #f8f5f2;
       --text-muted: #bbaab8;
     }
 
     * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      margin: 0; padding: 0; box-sizing: border-box;
+      user-select: none; -webkit-user-select: none;
       -webkit-tap-highlight-color: transparent;
     }
 
     html, body {
-      width: 100%;
-      min-height: 100vh;
-      min-height: 100dvh;
-      background: radial-gradient(circle at 50% 20%, var(--bg-warm) 0%, var(--bg-dark) 85%);
+      width: 100%; height: 100vh; height: 100dvh;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 25%, var(--bg-warm) 0%, var(--bg-dark) 82%);
       color: var(--text-main);
       font-family: 'Tajawal', sans-serif;
-      overflow-x: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      position: relative;
     }
 
-    /* الشعار العلوي البسيط بدون أي طبقات تحجب اللمس */
-    .header-brand {
-      width: 100%;
+    /* إضاءة خلفية ناعمة - تم نقلها للخلف لعدم التداخل مع اللمس */
+    .ambient-light {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1; 
+      overflow: hidden;
+    }
+    .orb-glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(85px);
+      opacity: 0.26;
+      animation: drift 14s ease-in-out infinite alternate;
+    }
+    .orb-1 {
+      width: 320px; height: 320px;
+      background: var(--rose);
+      top: -80px; right: -60px;
+    }
+    .orb-2 {
+      width: 280px; height: 280px;
+      background: var(--gold);
+      bottom: -70px; left: -60px;
+      animation-delay: -5s;
+    }
+    @keyframes drift {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-30px, 40px) scale(1.15); }
+    }
+
+    /* شعار علوي بسيط */
+    .top-brand-only {
+      position: fixed;
+      top: 20px; left: 0; right: 0;
+      z-index: 100;
       text-align: center;
-      padding: 18px 0 8px;
+      pointer-events: none;
+    }
+    .brand-tag {
       font-family: 'Playfair Display', serif;
       font-style: italic;
       color: var(--gold);
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       letter-spacing: 1.5px;
+      opacity: 0.85;
     }
 
-    /* كل فصل مستقل تماماً والغير نشط يأخذ display: none حتى لا يتداخل مع اللمس إطلاقاً */
-    .screen {
-      display: none;
-      width: 100%;
-      max-width: 430px;
-      padding: 15px 20px 30px;
+    /* حاوية الفصول */
+    .chapter {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: none; /* تم تغييرها لعدم عرض الطبقات غير النشطة */
       flex-direction: column;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      padding: 60px 22px 30px;
+      opacity: 0;
+      transform: translateY(18px);
       text-align: center;
-      animation: fadeScreen 0.5s ease forwards;
     }
-    .screen.active {
+    .chapter.active {
       display: flex;
-    }
-    @keyframes fadeScreen {
-      from { opacity: 0; transform: translateY(14px); }
-      to { opacity: 1; transform: translateY(0); }
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.75s ease, transform 0.75s ease;
     }
 
-    .tag-label {
+    .chapter-label {
       font-size: 0.76rem;
       color: var(--gold);
       letter-spacing: 2.5px;
@@ -81,207 +114,189 @@
       margin-bottom: 6px;
       font-weight: 700;
     }
-    .main-title {
+    .chapter-title {
       font-family: 'Amiri', serif;
-      font-size: 2rem;
+      font-size: 2.05rem;
       color: #fff;
       margin-bottom: 8px;
       font-weight: 700;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.6);
     }
-    .sub-desc {
+    .chapter-sub {
       color: var(--text-muted);
-      font-size: 0.95rem;
+      font-size: 0.96rem;
+      max-width: 400px;
       line-height: 1.7;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
 
-    /* أزرار صريحة ومباشرة تعمل على كل المتصفحات */
-    .btn-gold {
+    .btn-luxury {
       background: linear-gradient(135deg, var(--gold), #b88c42);
       color: #120b14;
       border: none;
-      padding: 14px 34px;
+      padding: 13px 34px;
       border-radius: 40px;
       font-family: 'Tajawal', sans-serif;
       font-weight: 800;
-      font-size: 0.98rem;
+      font-size: 0.96rem;
       cursor: pointer;
-      box-shadow: 0 8px 25px rgba(230, 193, 122, 0.3);
+      box-shadow: 0 10px 30px rgba(230, 193, 122, 0.3);
+      transition: all 0.35s ease;
       margin-top: 14px;
       display: inline-block;
     }
-    .btn-gold:active {
-      transform: scale(0.95);
-    }
+    .btn-luxury:active { transform: scale(0.95); }
 
-    /* ==================== الفصل 1: الظرف الملكي وختم الشمع الذهبي ==================== */
-    .envelope-card {
-      width: 100%;
-      background: linear-gradient(145deg, #231229, #120916);
-      border: 1px solid var(--border-gold);
-      border-radius: 26px;
-      padding: 28px 18px 24px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
-      margin: 6px 0 16px;
-      position: relative;
-    }
-
-    .wax-seal {
-      width: 82px;
-      height: 82px;
-      margin: 0 auto 16px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #f9e2b3, #d4a24c 55%, #8f6219 95%);
-      border: 2px solid #fff3d1;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.7), 0 0 25px rgba(230, 193, 122, 0.45);
+    /* ==================== الفصل 1: التمرير السحري (Swipe to Reveal) ==================== */
+    .swipe-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(12, 6, 16, 0.35);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      color: #2b1605;
-      font-family: 'Playfair Display', serif;
-      font-weight: 700;
-      font-size: 1.5rem;
-      transition: transform 0.4s ease, box-shadow 0.4s ease;
-    }
-    .wax-seal.open {
-      transform: scale(1.2) rotate(12deg);
-      box-shadow: 0 0 45px var(--gold-light);
-    }
-
-    .keys-row {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      margin-top: 12px;
-    }
-    .key-btn {
-      width: 66px;
-      height: 66px;
-      border-radius: 50%;
-      background: #2b1733;
-      border: 2px dashed var(--gold);
-      color: #fff;
-      font-size: 1.55rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      z-index: 50;
+      touch-action: none; /* ضروري لمنع التمرير الافتراضي */
       cursor: pointer;
-      transition: transform 0.2s, background 0.3s;
     }
-    .key-btn:active {
-      transform: scale(0.9);
+    .swipe-hint-icon {
+      font-size: 2.6rem;
+      animation: swipeAnim 1.6s ease-in-out infinite alternate;
+      text-shadow: 0 0 15px rgba(255,255,255,0.4);
     }
-    .key-btn.done {
-      background: linear-gradient(135deg, var(--rose), #9e1f47);
-      border-style: solid;
-      border-color: var(--gold-light);
-      box-shadow: 0 0 20px rgba(224, 87, 128, 0.7);
-      transform: scale(1.1);
+    @keyframes swipeAnim {
+      0% { transform: translateX(-35px) rotate(-12deg); }
+      100% { transform: translateX(35px) rotate(12deg); }
+    }
+    .fx-burst {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      font-size: 1.2rem;
+      filter: drop-shadow(0 0 12px rgba(255, 30, 86, 0.7));
     }
 
-    /* ==================== الفصل 2: كروت الملاحظات الطبية ==================== */
-    .med-card {
+    /* ==================== الفصل 2: كروت الملاحظات ==================== */
+    .story-card-container {
       width: 100%;
-      min-height: 245px;
-      background: var(--card-bg);
-      border: 1px solid var(--border-gold);
-      border-right: 4px solid var(--gold);
-      border-radius: 26px;
-      padding: 26px 22px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+      max-width: 410px;
+      min-height: 250px;
+      background: var(--glass);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: 28px;
+      padding: 28px 24px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       text-align: right;
+      position: relative;
+      overflow: hidden;
     }
-    .med-top {
+    .story-card-container::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 4px; height: 100%;
+      background: linear-gradient(to bottom, var(--gold), var(--rose));
+    }
+
+    .card-num-badge {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       color: var(--gold);
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       font-weight: 700;
       margin-bottom: 14px;
     }
-    .med-text {
-      font-size: 1.06rem;
+    .card-main-text {
+      font-size: 1.08rem;
       line-height: 1.9;
       color: var(--text-main);
       margin-bottom: 22px;
     }
-    .med-actions {
+    .card-nav-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-top: 1px solid rgba(255,255,255,0.1);
+      border-top: 1px solid rgba(255,255,255,0.08);
       padding-top: 14px;
     }
-    .btn-small {
-      background: #281a2e;
-      border: 1px solid rgba(255,255,255,0.2);
+    .btn-step {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.15);
       color: #fff;
-      padding: 10px 20px;
+      padding: 8px 18px;
       border-radius: 25px;
       font-family: 'Tajawal', sans-serif;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 700;
       cursor: pointer;
     }
-    .btn-small:active { transform: scale(0.94); }
 
-    /* ==================== الفصل 3: ألبوم الصور القابلة للقلب ==================== */
-    .polaroid-box {
+    /* ==================== الفصل 3: الصور القابلة للقلب (صافية بدون أيقونة كاميرا) ==================== */
+    .polaroid-scene {
       width: 280px;
-      height: 330px;
-      perspective: 1000px;
-      margin: 4px auto 14px;
+      height: 335px;
+      perspective: 1200px;
+      margin: 2px auto 12px;
       cursor: pointer;
     }
-    .polaroid-flip {
+    .polaroid-inner {
       width: 100%;
       height: 100%;
       position: relative;
       transform-style: preserve-3d;
-      transition: transform 0.65s ease;
+      transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .polaroid-flip.flipped {
+    .polaroid-inner.flipped {
       transform: rotateY(180deg);
     }
-    .pol-side {
+
+    .polaroid-face {
       position: absolute;
       inset: 0;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
       border-radius: 20px;
-      box-shadow: 0 20px 45px rgba(0,0,0,0.8);
+      box-shadow: 0 25px 55px rgba(0, 0, 0, 0.75);
     }
-    .pol-front {
+
+    .polaroid-front {
       background: #f8f5f0;
-      padding: 12px 12px 46px 12px;
+      padding: 13px 13px 48px 13px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
-    .pol-photo {
+    .pol-img {
       width: 100%;
       height: 235px;
       border-radius: 10px;
       background-size: cover;
       background-position: center;
       background-color: #1c1321;
+      position: relative;
+      overflow: hidden;
     }
-    .pol-caption {
+    .pol-front-caption {
       color: #2b2129;
       font-weight: 800;
       font-size: 0.92rem;
       margin-top: 10px;
       display: flex;
       justify-content: space-between;
+      align-items: center;
       padding: 0 4px;
     }
-    .pol-back {
+
+    .polaroid-back {
       background: linear-gradient(145deg, #1d1422, #120c16);
-      border: 1.5px solid var(--gold);
+      border: 1px solid var(--gold);
       transform: rotateY(180deg);
       padding: 26px 20px;
       display: flex;
@@ -290,357 +305,934 @@
       align-items: center;
       text-align: center;
     }
-    .pol-quote {
+    .back-quote {
       font-family: 'Amiri', serif;
       font-size: 1.28rem;
       color: var(--gold-light);
       line-height: 1.85;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    .back-hint {
+      font-size: 0.8rem;
+      color: var(--text-muted);
     }
 
-    .photo-nav {
+    .gallery-controls {
       display: flex;
-      gap: 14px;
+      gap: 12px;
       align-items: center;
       margin-top: 4px;
     }
-    .photo-lock-msg {
-      font-size: 0.84rem;
+    .seen-status {
+      font-size: 0.82rem;
       color: var(--gold-light);
-      margin-top: 10px;
+      margin-top: 8px;
+      opacity: 0.85;
     }
 
-    /* ==================== الفصل 4: الأمنيات الـ 3 بالترتيب الإجباري ==================== */
-    .wishes-list {
+    /* ==================== الفصل 4: أمنيات السنة الجديدة (ترتيب إجباري) ==================== */
+    .lanterns-grid {
       display: flex;
       flex-direction: column;
       gap: 12px;
       width: 100%;
-      margin-bottom: 10px;
+      max-width: 410px;
+      margin-bottom: 12px;
     }
-    .wish-btn {
-      width: 100%;
-      background: var(--card-bg);
-      border: 1px solid rgba(255,255,255,0.14);
+    .wish-item {
+      background: var(--glass);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 20px;
-      padding: 15px 16px;
+      padding: 15px 18px;
       display: flex;
       align-items: center;
       gap: 14px;
       cursor: pointer;
       text-align: right;
-      color: var(--text-muted);
-      font-family: 'Tajawal', sans-serif;
-      font-size: 0.95rem;
-      line-height: 1.65;
-      transition: all 0.3s ease;
+      transition: all 0.4s ease;
     }
-    .wish-btn.locked {
-      opacity: 0.4;
+    .wish-item.locked {
+      opacity: 0.42;
     }
-    .wish-btn.lit {
-      background: #281b24;
+    .wish-item.lit {
+      background: rgba(230, 193, 122, 0.14);
       border-color: var(--gold);
-      color: #fff;
-      box-shadow: 0 0 22px rgba(230, 193, 122, 0.25);
+      box-shadow: 0 0 25px rgba(230, 193, 122, 0.22);
+      transform: translateY(-2px);
     }
-    .star-circle {
-      width: 40px;
-      height: 40px;
+    .wish-star {
+      width: 40px; height: 40px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.06);
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       flex-shrink: 0;
-      color: var(--gold);
+      transition: all 0.4s;
     }
-    .wish-btn.lit .star-circle {
+    .wish-item.lit .wish-star {
       background: var(--gold);
       color: #111;
-      box-shadow: 0 0 15px var(--gold);
+      box-shadow: 0 0 18px var(--gold);
+      transform: scale(1.1);
     }
-    .wish-start {
+    .wish-text {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      transition: color 0.4s;
+    }
+    .wish-prefix {
       color: var(--gold);
       font-weight: 800;
       margin-left: 4px;
     }
+    .wish-item.lit .wish-text {
+      color: #fff;
+      font-weight: 500;
+    }
 
-    /* ==================== الفصل 5: التورتة الانسيابية + شمعة 19 + خيط الدخان ==================== */
-    .cake-box {
+    /* ==================== الفصل 5: التورتة الانسيابية + شمعة 19 + المايكروفون ==================== */
+    .cake-stage-wrap {
       display: flex;
       flex-direction: column;
       align-items: center;
-      position: relative;
-      cursor: pointer;
-    }
-    .cake-svg-wrap {
-      width: 280px;
-      height: 240px;
+      margin: 4px 0 10px;
       position: relative;
     }
 
-    /* أنيميشن سقوط أجزاء التورتة بـ CSS نقي ومضمون 100% */
-    .cake-part {
-      opacity: 0;
-      transform: translateY(-120px);
-      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.45s ease;
+    .cake-svg-container {
+      width: 280px;
+      height: 245px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    .cake-part.dropped {
+
+    .candle-aura {
+      width: 210px; height: 210px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 190, 70, 0.35) 0%, rgba(224, 87, 128, 0.14) 50%, transparent 72%);
+      position: absolute;
+      top: -25px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .candle-aura.lit {
       opacity: 1;
-      transform: translateY(0);
+      animation: auraBreath 2s ease-in-out infinite alternate;
+    }
+    @keyframes auraBreath {
+      from { transform: scale(0.94); }
+      to { transform: scale(1.08); }
     }
 
     .flame-19 {
       transform-origin: center bottom;
-      animation: flickerFlame 0.15s ease-in-out infinite alternate;
-      transition: opacity 0.4s ease, transform 0.4s ease;
+      animation: flicker19 0.14s ease-in-out infinite alternate;
+      transition: all 0.45s ease;
     }
     .flame-19.out {
       opacity: 0 !important;
       transform: scale(0) translateY(-15px);
     }
-    @keyframes flickerFlame {
+    @keyframes flicker19 {
       0% { transform: rotate(-3deg) scaleY(0.95); }
       100% { transform: rotate(3deg) scaleY(1.05); }
     }
 
-    .smoke-path {
+    /* خيوط الدخان */
+    .smoke-wisp {
       fill: none;
-      stroke: rgba(235, 240, 245, 0.7);
+      stroke: rgba(235, 240, 245, 0.65);
       stroke-width: 2.5;
       stroke-linecap: round;
+      filter: blur(1.5px);
       opacity: 0;
     }
-    .smoke-path.rise {
-      animation: riseSmoke 2.2s ease-out forwards;
+    .smoke-wisp.rise {
+      animation: smokeRise 2.2s ease-out forwards;
     }
-    @keyframes riseSmoke {
+    @keyframes smokeRise {
       0% { opacity: 0.85; transform: translateY(0) scaleX(1); }
       50% { opacity: 0.5; transform: translateY(-22px) scaleX(1.3); }
-      100% { opacity: 0; transform: translateY(-46px) scaleX(1.6); }
+      100% { opacity: 0; transform: translateY(-48px) scaleX(1.7); }
     }
 
-    .mic-bars {
+    .mic-eq-box {
       display: flex;
       align-items: flex-end;
       justify-content: center;
       gap: 5px;
-      height: 32px;
-      margin-top: 8px;
+      height: 34px;
+      margin-top: 10px;
     }
-    .m-bar {
-      width: 5.5px;
-      height: 6px;
+    .mic-bar {
+      width: 5.5px; height: 6px;
       border-radius: 4px;
       background: linear-gradient(to top, var(--gold), var(--rose));
-      transition: height 0.06s ease;
+      box-shadow: 0 0 8px var(--gold);
+      transition: height 0.05s ease;
     }
-    .warn-txt {
+    .touch-warning {
       font-size: 0.82rem;
       color: var(--rose-soft);
-      margin-top: 6px;
+      margin-top: 8px;
       min-height: 20px;
       opacity: 0;
       transition: opacity 0.3s;
     }
 
-    /* الرسالة الختامية */
-    .final-card {
+    /* الرسالة النهائية الفخمة */
+    .final-letter-card {
       display: none;
       width: 100%;
-      background: var(--card-bg);
-      border: 1.5px solid var(--gold);
-      border-radius: 26px;
-      padding: 26px 22px;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.9);
+      max-width: 430px;
+      background: rgba(18, 12, 22, 0.92);
+      backdrop-filter: blur(25px);
+      border: 1px solid var(--gold);
+      border-radius: 28px;
+      padding: 28px 24px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 40px rgba(230, 193, 122, 0.18);
       text-align: right;
+      animation: revealLetter 0.8s ease forwards;
     }
-    .final-head {
+    @keyframes revealLetter {
+      from { opacity: 0; transform: scale(0.92) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .letter-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid rgba(230, 193, 122, 0.25);
       padding-bottom: 12px;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
-    .final-title {
+    .letter-title {
       font-family: 'Amiri', serif;
-      font-size: 1.5rem;
+      font-size: 1.55rem;
       color: var(--gold);
     }
-    .final-body {
+    .letter-body {
       font-size: 1.04rem;
       line-height: 1.95;
       color: var(--text-main);
-      min-height: 130px;
+      min-height: 140px;
     }
-    .final-sign {
-      margin-top: 16px;
+    .letter-sign {
+      margin-top: 18px;
       text-align: left;
       font-family: 'Playfair Display', serif;
       font-style: italic;
       color: var(--rose-soft);
-    }
-
-    /* القلوب والورود المتطايرة (pointer-events: none دائماً) */
-    .fx-particle {
-      position: fixed;
-      pointer-events: none !important;
-      z-index: 999;
-      font-size: 1.4rem;
-      transition: transform 0.85s ease-out, opacity 0.85s ease-out;
+      font-size: 1rem;
     }
   </style>
 </head>
 <body>
 
-  <!-- موسيقى الخلفية الهادئة -->
+  <!-- موسيقى بيانو سينمائية هادئة تعمل تلقائياً مع أول لمسة -->
   <audio id="bgMusic" loop preload="auto">
     <source src="music.mp3" type="audio/mpeg">
     <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3" type="audio/mpeg">
-    <source src="https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3" type="audio/mpeg">
   </audio>
 
-  <div class="header-brand">Haneen ✨</div>
+  <div class="ambient-light">
+    <div class="orb-glow orb-1"></div>
+    <div class="orb-glow orb-2"></div>
+  </div>
 
-  <!-- ==================== الفصل 1: الظرف الملكي وختم الشمع الذهبي ==================== -->
-  <main class="screen active" id="screen1">
-    <div class="tag-label">PRIVATE EDITION</div>
-    <h1 class="main-title">إلى حنين.. في يوم ميلادك</h1>
-    <p class="sub-desc">
-      في تفاصيل مبيتشرحش جمالها بكلام عادي.. اضغطي على الـ 3 رموز بالأسفل عشان تكسري ختم الشمع الذهبي وتفتحي دعوتك الخاصة.
+  <div class="top-brand-only">
+    <span class="brand-tag">Haneen ✨</span>
+  </div>
+
+  <!-- ==================== الفصل 1: التمرير السحري لفتح الهدية ==================== -->
+  <section class="chapter active" id="chap1">
+    <div class="chapter-label">PRIVATE EDITION</div>
+    <h1 class="chapter-title">إلى حنين.. في يوم ميلادك</h1>
+    <p class="chapter-sub" style="margin-bottom: 40px;">
+      في تفاصيل مبيتشرحش جمالها بكلام عادي..
     </p>
 
-    <div class="envelope-card">
-      <div class="wax-seal" id="waxSeal">
-        <span>H</span>
-        <small style="font-size:0.55rem; letter-spacing:1px; margin-top:-4px;">19TH</small>
-      </div>
-      <p style="font-size:0.9rem; color:var(--gold-light); font-weight:700;">
-        اضغطي على الـ 3 رموز للفتح (<span id="keyCounter">0</span>/3)
+    <div class="swipe-overlay" id="swipeZone">
+      <div class="swipe-hint-icon">👆</div>
+      <p style="font-size: 0.95rem; color: var(--gold); margin-top: 15px; font-weight: 700; text-align: center; pointer-events: none;">
+        امسحي الشاشة بصباعك لنثر الورود<br>وفتح المفاجأة ✨
       </p>
-
-      <div class="keys-row">
-        <button type="button" class="key-btn" onclick="pressKey(this, 1, event)">🌹</button>
-        <button type="button" class="key-btn" onclick="pressKey(this, 2, event)">❤️</button>
-        <button type="button" class="key-btn" onclick="pressKey(this, 3, event)">✨</button>
+      <div style="width: 150px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 4px; margin-top: 20px; overflow: hidden; pointer-events: none;">
+        <div id="swipeProgress" style="width: 0%; height: 100%; background: var(--rose); transition: width 0.1s;"></div>
       </div>
     </div>
-
-    <span id="openStatus" style="font-size:0.86rem; color:var(--gold);">المسي الوردة والقلب والنجمة للفتح ✨</span>
-  </main>
+  </section>
 
   <!-- ==================== الفصل 2: كروت الملاحظات الطبية ==================== -->
-  <section class="screen" id="screen2">
-    <div class="tag-label">CLINICAL NOTES</div>
-    <h2 class="main-title">ملاحظات خارج منهج الطب</h2>
-    <p class="sub-desc">4 حقائق سريعة كان لازم يتسجلوا النهاردة:</p>
+  <section class="chapter" id="chap2">
+    <div class="chapter-label">CLINICAL NOTES</div>
+    <h2 class="chapter-title">ملاحظات خارج منهج الطب</h2>
+    <p class="chapter-sub" style="margin-bottom:16px;">
+      4 حقائق سريعة كان لازم يتسجلوا النهاردة:
+    </p>
 
-    <div class="med-card">
+    <div class="story-card-container">
       <div>
-        <div class="med-top">
-          <span id="noteTitle">الملاحظة الأولى 🩺</span>
-          <span id="noteNum">1 / 4</span>
+        <div class="card-num-badge">
+          <span id="noteBadgeTitle">الملاحظة الأولى 🩺</span>
+          <span id="noteStepCount">1 / 4</span>
         </div>
-        <p class="med-text" id="noteBody">
+        <p class="card-main-text" id="noteContent">
           في الكلية بيعلمونا إن كل حاجة في الجسم ليها سبب ونتيجة ومعادلة محفوظة.. بس الحقيقة إن الراحة والهدوء اللي بيحصلوا لما بنتكلم كسروا كل القواعد دي من غير أي مجهود.
         </p>
       </div>
 
-      <div class="med-actions">
-        <button type="button" class="btn-small" onclick="stepNote(-1)">السابق</button>
-        <button type="button" class="btn-small" style="background:var(--gold); color:#111; border:none;" id="nextNoteBtn" onclick="stepNote(1)">الملاحظة التالية ←</button>
+      <div class="card-nav-row">
+        <button class="btn-step" onclick="prevNote()">السابق</button>
+        <button class="btn-step" style="background:var(--gold); color:#111; border:none;" id="nextNoteBtn" onclick="nextNote()">الملاحظة التالية ←</button>
       </div>
     </div>
   </section>
 
-  <!-- ==================== الفصل 3: ألبوم الصور القابلة للقلب ==================== -->
-  <section class="screen" id="screen3">
-    <div class="tag-label">MEMORIES ARCHIVE</div>
-    <h2 class="main-title">لقطاتنا وكواليسها 📸</h2>
-    <p class="sub-desc" style="margin-bottom:8px;">
+  <!-- ==================== الفصل 3: الصور (بدون كاميرا شفافة + قفل الزر) ==================== -->
+  <section class="chapter" id="chap3">
+    <div class="chapter-label">MEMORIES ARCHIVE</div>
+    <h2 class="chapter-title">لقطاتنا وكواليسها 📸</h2>
+    <p class="chapter-sub" style="margin-bottom:8px;">
       اضغطي على الصورة عشان <strong style="color:var(--gold);">تقلبيها على ظهرها</strong> وتقرأي اللي مكتوب وراها:
     </p>
 
-    <div class="polaroid-box" onclick="toggleFlipPhoto()">
-      <div class="polaroid-flip" id="polaroidFlip">
-        <div class="pol-side pol-front">
-          <div class="pol-photo" id="polImg" style="background-image: url('photo1.jpg'), linear-gradient(135deg, #2b1055, #d52d58);"></div>
-          <div class="pol-caption">
-            <span id="polTitle">اللقطة الأولى ✨</span>
-            <span style="font-size:0.8rem; color:#777;">اضغطي لقلب الصورة ↺</span>
+    <div class="polaroid-scene" onclick="flipPolaroid()">
+      <div class="polaroid-inner" id="polaroidCard">
+        <div class="polaroid-face polaroid-front">
+          <div class="pol-img" id="polImgBox" style="background-image: url('photo1.jpg'), linear-gradient(135deg, #2b1055, #d52d58);"></div>
+          <div class="pol-front-caption">
+            <span id="polFrontTitle">اللقطة الأولى ✨</span>
+            <span style="font-size:0.8rem; color:#888;">اضغطي لقلب الصورة ↺</span>
           </div>
         </div>
-        <div class="pol-side pol-back">
-          <div style="color:var(--gold); font-size:1.4rem; margin-bottom:8px;">❝</div>
-          <p class="pol-quote" id="polBackQuote">
+
+        <div class="polaroid-face polaroid-back">
+          <div style="color:var(--gold); font-size:1.4rem; margin-bottom:10px;">❝</div>
+          <p class="back-quote" id="polBackText">
             من البداية وكان واضح إنك شخص مختلف.. حضورك بيخلي لأي مكان ولأي وقت طعم تاني خالص.
           </p>
-          <span style="font-size:0.8rem; color:var(--text-muted);">اضغطي للعودة للصورة ↻</span>
+          <span class="back-hint">اضغطي للعودة للصورة ↻</span>
         </div>
       </div>
     </div>
 
-    <div class="photo-nav">
-      <button type="button" class="btn-small" onclick="navPhoto(-1)">→ السابقة</button>
-      <span id="photoIdxTxt" style="color:var(--gold); font-weight:800; min-width:55px;">1 / 4</span>
-      <button type="button" class="btn-small" onclick="navPhoto(1)">التالية ←</button>
+    <div class="gallery-controls">
+      <button class="btn-step" onclick="changePhoto(-1)">→ السابقة</button>
+      <span id="photoCounterTxt" style="color:var(--gold); font-weight:700; min-width:55px;">1 / 4</span>
+      <button class="btn-step" onclick="changePhoto(1)">التالية ←</button>
     </div>
 
-    <div class="photo-lock-msg" id="photoLockMsg">شوفي الـ 4 لقطات كلهم عشان تفتحي المرحلة الجاية (1/4)</div>
+    <div class="seen-status" id="seenStatusTxt">شوفي الـ 4 لقطات كلهم عشان تفتحي المرحلة الجاية (1/4)</div>
 
-    <button type="button" class="btn-gold" id="toWishesBtn" style="display:none;" onclick="showScreen(4)">
+    <button class="btn-luxury" id="toChapter4Btn" style="display:none;" onclick="goToChapter(4)">
       إضاءة أمنياتي ليكي ✨
     </button>
   </section>
 
-  <!-- ==================== الفصل 4: الأمنيات الـ 3 بالترتيب الإجباري ==================== -->
-  <section class="screen" id="screen4">
-    <div class="tag-label">BIRTHDAY WISHES FOR YOU</div>
-    <h2 class="main-title">3 أمنيات بتمنهالك في سنتك الـ 19</h2>
-    <p class="sub-desc" style="margin-bottom:12px;">
+  <!-- ==================== الفصل 4: الأمنيات (ترتيب إجباري 1 ثم 2 ثم 3) ==================== -->
+  <section class="chapter" id="chap4">
+    <div class="chapter-label">BIRTHDAY WISHES FOR YOU</div>
+    <h2 class="chapter-title">3 أمنيات بتمنهالك في سنتك الـ 19</h2>
+    <p class="chapter-sub" style="margin-bottom:14px;">
       المسى النجوم الـ 3 بالترتيب عشان تنوري الأمنيات اللي بتمنهالك من قلبي:
     </p>
 
-    <div class="wishes-list">
-      <button type="button" class="wish-btn" id="wish1" onclick="unlockWish(1)">
-        <span class="star-circle" id="star1">☆</span>
-        <span><span class="wish-start">أتمنى لكِ</span> سنة تشبه جمال روحك، مليانة راحة بال ونجاح في كل خطوة بتتمنيها.</span>
-      </button>
+    <div class="lanterns-grid">
+      <div class="wish-item" id="wishItem1" onclick="lightWish(this, 1)">
+        <div class="wish-star">☆</div>
+        <div class="wish-text">
+          <span class="wish-prefix">أتمنى لكِ</span> سنة تشبه جمال روحك، مليانة راحة بال ونجاح في كل خطوة بتتمنيها.
+        </div>
+      </div>
 
-      <button type="button" class="wish-btn locked" id="wish2" onclick="unlockWish(2)">
-        <span class="star-circle" id="star2">☆</span>
-        <span><span class="wish-start">أتمنى لكِ</span> فرحة متفارقش عيونك، وتفضل ضحكتك هي العادة الثابتة اللي بتنور أيامك وأيام اللي حواليكي.</span>
-      </button>
+      <div class="wish-item locked" id="wishItem2" onclick="lightWish(this, 2)">
+        <div class="wish-star">☆</div>
+        <div class="wish-text">
+          <span class="wish-prefix">أتمنى لكِ</span> فرحة متفارقش عيونك، وتفضل ضحكتك هي العادة الثابتة اللي بتنور أيامك وأيام اللي حواليكي.
+        </div>
+      </div>
 
-      <button type="button" class="wish-btn locked" id="wish3" onclick="unlockWish(3)">
-        <span class="star-circle" id="star3">☆</span>
-        <span><span class="wish-start">أتمنى لكِ</span> أيام كلها دفا، ونكمل سوا خروجاتنا وذكرياتنا الحلوة وتكون كل سنة جاية أروق وأجمل من اللي قبلها.</span>
-      </button>
+      <div class="wish-item locked" id="wishItem3" onclick="lightWish(this, 3)">
+        <div class="wish-star">☆</div>
+        <div class="wish-text">
+          <span class="wish-prefix">أتمنى لكِ</span> أيام كلها دفا، ونكمل سوا خروجاتنا وذكرياتنا الحلوة وتكون كل سنة جاية أروق وأجمل من اللي قبلها.
+        </div>
+      </div>
     </div>
 
-    <button type="button" class="btn-gold" id="toCakeScreenBtn" style="display:none;" onclick="showScreen(5)">
+    <button class="btn-luxury" id="toCakeBtn" style="display:none;" onclick="goToChapter(5)">
       اللحظة الأخيرة: تورتة عيد ميلادك الـ 19 🎂
     </button>
   </section>
 
-  <!-- ==================== الفصل 5: التورتة الانسيابية + شمعة 19 + المايكروفون ==================== -->
-  <section class="screen" id="screen5">
-    <div id="cakeArea">
-      <div class="tag-label">HAPPY 19TH BIRTHDAY</div>
-      <h2 class="main-title">اتمني أمنيتك وطفي شمعة الـ 19 ✨</h2>
-      <p class="sub-desc" style="margin-bottom:6px;">
+  <!-- ==================== الفصل 5: التورتة + شمعة 19 + المايكروفون ==================== -->
+  <section class="chapter" id="chap5">
+    <div id="cakeSection">
+      <div class="chapter-label">HAPPY 19TH BIRTHDAY</div>
+      <h2 class="chapter-title">اتمني أمنيتك وطفي شمعة الـ 19 ✨</h2>
+      <p class="chapter-sub" style="margin-bottom:6px;">
         انفخي في المايكروفون بتاع الموبايل عشان تطفي الشموع وتفتحي رسالتك!
       </p>
 
-      <div class="cake-box" onclick="touchCakeWarn()">
-        <div class="cake-svg-wrap">
+      <div class="cake-stage-wrap" onclick="handleCakeTouch()">
+        <div class="candle-aura" id="candleAura"></div>
+
+        <div class="cake-svg-container">
           <svg viewBox="0 0 280 245" width="100%" height="100%" style="overflow:visible;">
             <defs>
               <linearGradient id="gPlate" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stop-color="#9c732b"/>
                 <stop offset="50%" stop-color="#f9e2b3"/>
                 <stop offset="100%" stop-color="#9c732b"/>
-              </linearGra
+              </linearGradient>
+              <linearGradient id="gTier1" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#9e1f47"/>
+                <stop offset="50%" stop-color="#d63868"/>
+                <stop offset="100%" stop-color="#8a163a"/>
+              </linearGradient>
+              <linearGradient id="gTier2" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#c22e5c"/>
+                <stop offset="50%" stop-color="#ee5d88"/>
+                <stop offset="100%" stop-color="#ad214b"/>
+              </linearGradient>
+              <linearGradient id="gCream" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#ffffff"/>
+                <stop offset="100%" stop-color="#fde8ef"/>
+              </linearGradient>
+              <linearGradient id="gGoldNum" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fff3d1"/>
+                <stop offset="45%" stop-color="#e6c17a"/>
+                <stop offset="100%" stop-color="#9c6f27"/>
+              </linearGradient>
+            </defs>
+
+            <g id="svgPlate" opacity="0">
+              <ellipse cx="140" cy="222" rx="115" ry="12" fill="rgba(0,0,0,0.55)"/>
+              <rect x="30" y="212" width="220" height="10" rx="5" fill="url(#gPlate)"/>
+              <ellipse cx="140" cy="212" rx="110" ry="7" fill="#f9e2b3"/>
+            </g>
+
+            <g id="svgTier1" opacity="0">
+              <rect x="52" y="156" width="176" height="56" rx="10" fill="url(#gTier1)"/>
+              <rect x="52" y="182" width="176" height="5" fill="#f9e2b3" opacity="0.8"/>
+              <path d="M50,158 Q65,168 80,158 T110,158 T140,158 T170,158 T200,158 T230,158 L228,152 L52,152 Z" fill="url(#gCream)"/>
+            </g>
+
+            <g id="svgTier2" opacity="0">
+              <rect x="74" y="104" width="132" height="52" rx="10" fill="url(#gTier2)"/>
+              <rect x="74" y="128" width="132" height="4" fill="#f9e2b3" opacity="0.75"/>
+            </g>
+
+            <g id="svgCreamTop" opacity="0">
+              <path d="M72,108 C72,102 208,102 208,108 L208,116 Q196,130 185,116 T162,122 T140,115 T118,124 T95,115 T72,118 Z" fill="url(#gCream)"/>
+              <ellipse cx="140" cy="105" rx="68" ry="6" fill="#ffffff"/>
+              <circle cx="88" cy="104" r="4" fill="url(#gGoldNum)"/>
+              <circle cx="112" cy="106" r="4" fill="url(#gGoldNum)"/>
+              <circle cx="140" cy="107" r="4.5" fill="url(#gGoldNum)"/>
+              <circle cx="168" cy="106" r="4" fill="url(#gGoldNum)"/>
+              <circle cx="192" cy="104" r="4" fill="url(#gGoldNum)"/>
+            </g>
+
+            <g id="svgCandle19" opacity="0">
+              <line x1="120" y1="45" x2="120" y2="53" stroke="#333" stroke-width="2.5"/>
+              <line x1="158" y1="45" x2="158" y2="53" stroke="#333" stroke-width="2.5"/>
+              <path d="M110,60 L120,52 L126,52 L126,96 L132,96 L132,103 L108,103 L108,96 L115,96 L115,63 L110,66 Z" fill="url(#gGoldNum)" stroke="#ffffff" stroke-width="1"/>
+              <path d="M158,52 C145,52 138,60 138,70 C138,80 145,86 155,86 C159,86 162,85 164,83 C163,92 157,97 148,97 C145,97 142,96 140,95 L138,101 C141,103 145,104 150,104 C165,104 174,93 174,75 C174,60 167,52 158,52 Z M157,78 C151,78 147,74 147,69 C147,63 151,59 157,59 C163,59 165,64 165,70 C165,75 162,78 157,78 Z" fill="url(#gGoldNum)" stroke="#ffffff" stroke-width="1"/>
+            </g>
+
+            <!-- خيوط الدخان المتصاعدة بعد الانطفاء -->
+            <path id="smokeOne" class="smoke-wisp" d="M120,45 Q114,32 122,20 T118,-4"/>
+            <path id="smokeNine" class="smoke-wisp" d="M158,45 Q164,32 156,20 T160,-4"/>
+
+            <g id="svgFlamesGroup" opacity="0">
+              <g class="flame-19" id="flameOne" style="transform-origin: 120px 45px;">
+                <path d="M120,16 C110,29 112,44 120,45 C128,44 130,29 120,16 Z" fill="#ff9800" style="filter: drop-shadow(0 0 12px #ffae00);"/>
+                <path d="M120,23 C114,32 115,43 120,44 C125,43 126,32 120,23 Z" fill="#ffe066"/>
+                <ellipse cx="120" cy="39" rx="3" ry="4.5" fill="#ffffff"/>
+              </g>
+              <g class="flame-19" id="flameNine" style="transform-origin: 158px 45px; animation-delay: 0.07s;">
+                <path d="M158,16 C148,29 150,44 158,45 C166,44 168,29 158,16 Z" fill="#ff9800" style="filter: drop-shadow(0 0 12px #ffae00);"/>
+                <path d="M158,23 C152,32 153,43 158,44 C163,43 164,32 158,23 Z" fill="#ffe066"/>
+                <ellipse cx="158" cy="39" rx="3" ry="4.5" fill="#ffffff"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+
+        <div class="mic-eq-box">
+          <div class="mic-bar"></div><div class="mic-bar"></div><div class="mic-bar"></div>
+          <div class="mic-bar"></div><div class="mic-bar"></div><div class="mic-bar"></div>
+          <div class="mic-bar"></div><div class="mic-bar"></div><div class="mic-bar"></div>
+        </div>
+        <span id="micStatusLabel" style="font-size:0.8rem; color:var(--gold); margin-top:6px;">
+          🎤 انفخي في مايك الموبايل لإطفاء شمعة الـ 19
+        </span>
+        <div class="touch-warning" id="touchWarn">اللمس ممنوع 😄 انفخي في المايكروفون عشان تطفيها!</div>
+      </div>
+    </div>
+
+    <!-- الرسالة النهائية الفخمة -->
+    <div class="final-letter-card" id="finalLetterCard">
+      <div class="letter-header">
+        <span class="letter-title">كل سنة وأنتِ طيبة يا حنين ❤️</span>
+        <span style="color:var(--gold); font-family:'Playfair Display';">19th // Rx</span>
+      </div>
+      <div class="letter-body" id="typewriterBox"></div>
+      <div class="letter-sign">Happy 19th Birthday, Haneen ✨🩺</div>
+    </div>
+  </section>
+
+  <script>
+    // ================= 1. الصوت والموسيقى =================
+    const bgMusic = document.getElementById('bgMusic');
+    let musicStarted = false;
+    let audioCtx = null;
+
+    function ensureAudioCtx() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function startBackgroundMusic() {
+      if (musicStarted) return;
+      ensureAudioCtx();
+      bgMusic.volume = 0.6;
+      bgMusic.play().then(() => {
+        musicStarted = true;
+      }).catch(() => {});
+    }
+
+    function playWishChime(wishNumber) {
+      ensureAudioCtx();
+      const chords = {
+        1: [523.25, 659.25, 783.99, 1046.50],
+        2: [587.33, 739.99, 880.00, 1174.66],
+        3: [659.25, 830.61, 987.77, 1318.51]
+      };
+      const notes = chords[wishNumber] || chords[1];
+
+      notes.forEach((freq, idx) => {
+        setTimeout(() => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+          gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.14, audioCtx.currentTime + 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.4);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 1.4);
+        }, idx * 95);
+      });
+    }
+
+    function haptic(ms = 35) {
+      try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {}
+    }
+
+    // ================= 2. التنقل بين الفصول =================
+    function goToChapter(num) {
+      haptic(30);
+      document.querySelectorAll('.chapter').forEach(c => c.classList.remove('active'));
+      document.getElementById('chap' + num).classList.add('active');
+
+      if (num === 5) {
+        animateCakeAssembly();
+      }
+    }
+
+    // ================= 3. الفصل 1: التمرير السحري (Swipe to Reveal) =================
+    const swipeZone = document.getElementById('swipeZone');
+    let unlocked = false;
+    let swipeProg = 0;
+    let isSwiping = false;
+    let lastSpawn = 0;
+
+    function spawnBurst(x, y) {
+      const now = Date.now();
+      if (now - lastSpawn < 40) return; // تقليل الكثافة قليلاً لأداء أفضل
+      lastSpawn = now;
+
+      const icons = ['❤️', '🌹', '✨', '♥️', '🌹'];
+      for (let i = 0; i < 2; i++) {
+        const p = document.createElement('div');
+        p.className = 'fx-burst';
+        p.innerText = icons[Math.floor(Math.random() * icons.length)];
+        p.style.left = x + 'px';
+        p.style.top = y + 'px';
+        document.body.appendChild(p);
+
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 30 + Math.random() * 50;
+        const tx = Math.cos(angle) * dist;
+        const ty = Math.sin(angle) * dist - 25;
+
+        if (window.gsap) {
+          gsap.fromTo(p,
+            { scale: 0.5, opacity: 1, x: 0, y: 0 },
+            { scale: 1.3, opacity: 0, x: tx, y: ty, rotation: (Math.random() - 0.5) * 90, duration: 0.8, ease: 'power2.out', onComplete: () => p.remove() }
+          );
+        } else {
+          // بديل بسيط في حال فشل GSAP
+          p.style.transition = 'transform 0.8s ease-out, opacity 0.8s ease-out';
+          requestAnimationFrame(() => {
+            p.style.transform = `translate(${tx}px, ${ty}px) scale(1.3) rotate(${(Math.random() - 0.5) * 90}deg)`;
+            p.style.opacity = '0';
+          });
+          setTimeout(() => p.remove(), 800);
+        }
+      }
+    }
+
+    function handleSwipeMove(x, y) {
+      if (unlocked) return;
+      startBackgroundMusic();
+      spawnBurst(x, y);
+
+      swipeProg = Math.min(100, swipeProg + 4); // زيادة أبطأ لتمرير أكثر
+      document.getElementById('swipeProgress').style.width = swipeProg + '%';
+
+      if (swipeProg >= 100) {
+        unlocked = true;
+        haptic(100);
+        playWishChime(1);
+        setTimeout(() => goToChapter(2), 300);
+      }
+    }
+
+    // دعم أحداث اللمس (الهواتف)
+    swipeZone.addEventListener('touchstart', e => {
+      if (unlocked) return;
+      isSwiping = true;
+      const t = e.touches[0];
+      handleSwipeMove(t.clientX, t.clientY);
+    }, { passive: true });
+
+    swipeZone.addEventListener('touchmove', e => {
+      if (unlocked || !isSwiping) return;
+      const t = e.touches[0];
+      handleSwipeMove(t.clientX, t.clientY);
+    }, { passive: true });
+
+    swipeZone.addEventListener('touchend', () => { isSwiping = false; });
+    swipeZone.addEventListener('touchcancel', () => { isSwiping = false; });
+
+    // دعم أحداث الفأرة (الكمبيوتر)
+    swipeZone.addEventListener('mousedown', e => {
+      if (unlocked) return;
+      isSwiping = true;
+      handleSwipeMove(e.clientX, e.clientY);
+    });
+
+    swipeZone.addEventListener('mousemove', e => {
+      if (unlocked || !isSwiping) return;
+      handleSwipeMove(e.clientX, e.clientY);
+    });
+
+    window.addEventListener('mouseup', () => { isSwiping = false; });
+    swipeZone.addEventListener('mouseleave', () => { isSwiping = false; });
+
+    // ================= 4. الفصل 2: كروت الملاحظات الطبية =================
+    const clinicalNotes = [
+      {
+        title: "الملاحظة الأولى 🩺",
+        text: "في الكلية بيعلمونا إن كل حاجة في الجسم ليها سبب ونتيجة ومعادلة محفوظة.. بس الحقيقة إن الراحة والهدوء اللي بيحصلوا لما بنتكلم كسروا كل القواعد دي من غير أي مجهود."
+      },
+      {
+        title: "الملاحظة التانية ⚡",
+        text: "أهم عرض جانبي لاحظته: إن أي يوم مهما كان زحمة أو متعب، بيتصلح موده تماماً بمجرد ما بننزل سوا أو نتكلم."
+      },
+      {
+        title: "الملاحظة التالتة ☕",
+        text: "الموضوع عمره ما كان بعدد الأيام ولا بنعرف بعض من إمتى.. في ناس بتدخل حياتك تثبت مكانها بهدوء ومن أول لحظة، وأنتِ على راسهم."
+      },
+      {
+        title: "التشخيص النهائي ✨",
+        text: "خلاصة الكشف: ضحكتك وتفاصيلك مكسب كبير ميتعوضش.. ووجودك ثابت وأساسي في كل الأيام الجاية."
+      }
+    ];
+    let curNote = 0;
+
+    function updateNoteView() {
+      document.getElementById('noteBadgeTitle').innerText = clinicalNotes[curNote].title;
+      document.getElementById('noteStepCount').innerText = `${curNote + 1} / 4`;
+      document.getElementById('noteContent').innerText = clinicalNotes[curNote].text;
+
+      const nextBtn = document.getElementById('nextNoteBtn');
+      if (curNote === clinicalNotes.length - 1) {
+        nextBtn.innerText = "ألبوم ذكرياتنا 📸 ←";
+      } else {
+        nextBtn.innerText = "الملاحظة التالية ←";
+      }
+    }
+
+    function nextNote() {
+      haptic(25);
+      if (curNote < clinicalNotes.length - 1) {
+        curNote++;
+        updateNoteView();
+      } else {
+        goToChapter(3);
+      }
+    }
+
+    function prevNote() {
+      haptic(25);
+      if (curNote > 0) {
+        curNote--;
+        updateNoteView();
+      }
+    }
+
+    // ================= 5. الفصل 3: الصور (بدون أيقونة الكاميرا + قفل الزر) =================
+    const photosList = [
+      {
+        img: "url('photo1.jpg'), linear-gradient(135deg, #2b1055, #d52d58)",
+        title: "اللقطة الأولى ✨",
+        back: "من البداية وكان واضح إنك شخص مختلف.. حضورك بيخلي لأي مكان ولأي وقت طعم تاني خالص."
+      },
+      {
+        img: "url('photo2.jpg'), linear-gradient(135deg, #0f2027, #2c5364)",
+        title: "خروجاتنا سوا ☕",
+        back: "الوقت وإحنا قاعدين سوا بيمشي بقانون تاني.. الساعات بتعدي كأنها دقايق من غير ما نحس بيها."
+      },
+      {
+        img: "url('photo3.jpg'), linear-gradient(135deg, #1f1c2c, #928dab)",
+        title: "أحلى ضحكة 📸",
+        back: "كل صورة اتصورناها شايلة وراها كواليس وضحكة حقيقية من القلب مبتتنسيش."
+      },
+      {
+        img: "url('photo4.jpg'), linear-gradient(135deg, #3a1c71, #d76d77)",
+        title: "اللي جاي أحلى ❤️",
+        back: "كل مرة بننزل فيها بتأكدلي إن وجودك في حياتي هو أحلى تفصيلة حصلت."
+      }
+    ];
+    let curPhoto = 0;
+    let viewedPhotosSet = new Set([0]);
+
+    function flipPolaroid() {
+      haptic(30);
+      document.getElementById('polaroidCard').classList.toggle('flipped');
+    }
+
+    function changePhoto(dir) {
+      haptic(25);
+      const card = document.getElementById('polaroidCard');
+      card.classList.remove('flipped');
+
+      setTimeout(() => {
+        curPhoto = (curPhoto + dir + photosList.length) % photosList.length;
+        viewedPhotosSet.add(curPhoto);
+
+        document.getElementById('polImgBox').style.backgroundImage = photosList[curPhoto].img;
+        document.getElementById('polFrontTitle').innerText = photosList[curPhoto].title;
+        document.getElementById('polBackText').innerText = photosList[curPhoto].back;
+        document.getElementById('photoCounterTxt').innerText = `${curPhoto + 1} / ${photosList.length}`;
+
+        const seenCount = viewedPhotosSet.size;
+        const statusEl = document.getElementById('seenStatusTxt');
+        statusEl.innerText = `شوفي الـ 4 لقطات كلهم عشان تفتحي المرحلة الجاية (${seenCount}/4)`;
+
+        if (seenCount >= photosList.length) {
+          statusEl.style.display = 'none';
+          const btn = document.getElementById('toChapter4Btn');
+          btn.style.display = 'inline-block';
+          if (window.gsap) {
+            gsap.fromTo(btn, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45 });
+          }
+        }
+      }, 150);
+    }
+
+    // ================= 6. الفصل 4: إضاءة الأمنيات بالترتيب الإجباري =================
+    let litWishes = new Set();
+    function lightWish(el, id) {
+      if (id > litWishes.size + 1) {
+        haptic(25);
+        if (window.gsap) {
+          gsap.fromTo(el, { x: -6 }, { x: 6, duration: 0.07, repeat: 3, yoyo: true });
+        }
+        return;
+      }
+      if (litWishes.has(id)) return;
+
+      haptic(40);
+      playWishChime(id);
+
+      el.classList.add('lit');
+      el.classList.remove('locked');
+      el.querySelector('.wish-star').innerText = '★';
+      litWishes.add(id);
+
+      const nextItem = document.getElementById('wishItem' + (id + 1));
+      if (nextItem) nextItem.classList.remove('locked');
+
+      if (litWishes.size >= 3) {
+        const btn = document.getElementById('toCakeBtn');
+        if (btn.style.display === 'none') {
+          btn.style.display = 'inline-block';
+          if (window.gsap) {
+            gsap.fromTo(btn, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45 });
+          }
+        }
+      }
+    }
+
+    // ================= 7. الفصل 5: نزول التورتة قطعة قطعة + شمعة 19 + النفخ =================
+    let cakeReadyForBlow = false;
+    let flameOut = false;
+    let micUnavailableFallback = false;
+
+    function animateCakeAssembly() {
+      if (!window.gsap) {
+        ['#svgPlate', '#svgTier1', '#svgTier2', '#svgCreamTop', '#svgCandle19', '#svgFlamesGroup'].forEach(sel => {
+          const el = document.querySelector(sel);
+          if (el) el.setAttribute('opacity', '1');
+        });
+        cakeReadyForBlow = true;
+        document.getElementById('candleAura').classList.add('lit');
+        initMicListener();
+        return;
+      }
+
+      const tl = gsap.timeline({
+        onComplete: () => {
+          cakeReadyForBlow = true;
+          document.getElementById('candleAura').classList.add('lit');
+          initMicListener();
+        }
+      });
+
+      tl.fromTo('#svgPlate', { y: -140, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: 'back.out(1.4)' })
+        .fromTo('#svgTier1', { y: -160, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'bounce.out' }, '-=0.15')
+        .fromTo('#svgTier2', { y: -160, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'bounce.out' }, '-=0.2')
+        .fromTo('#svgCreamTop', { y: -80, scaleY: 0.3, opacity: 0, transformOrigin: 'center top' }, { y: 0, scaleY: 1, opacity: 1, duration: 0.55, ease: 'elastic.out(1, 0.6)' }, '-=0.15')
+        .fromTo('#svgCandle19', { y: -100, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: 'back.out(1.6)' }, '-=0.1')
+        .fromTo('#svgFlamesGroup', { scale: 0, opacity: 0, transformOrigin: 'center bottom' }, { scale: 1, opacity: 1, duration: 0.45, ease: 'back.out(2)' });
+    }
+
+    function handleCakeTouch() {
+      if (flameOut) return;
+      if (micUnavailableFallback && cakeReadyForBlow) {
+        extinguishFlameByMic();
+        return;
+      }
+      haptic(25);
+      const warn = document.getElementById('touchWarn');
+      warn.style.opacity = '1';
+      if (window.gsap) {
+        gsap.fromTo(warn, { x: -6 }, { x: 6, duration: 0.08, repeat: 3, yoyo: true });
+      }
+      setTimeout(() => { warn.style.opacity = '0'; }, 2600);
+    }
+
+    const finalMessage = "كل سنة وأنتِ طيبة يا حنين.. في عيد ميلادك الـ 19 حبيت أعملك حاجة هادية ومختلفة تشبهك وتفضل ذكرى مميزة بينا. وجودك في حياتي، خروجاتنا، وكل تفصيلة بنعيشها سوا ليها مكانة كبيرة عندي. بتمنالك سنة جديدة مليانة نجاح وراحة بال، وتفضلي دايماً منورة أيامي بضحكتك وبروحك الحلوة. عيد ميلاد سعيد! ❤️✨";
+
+    function extinguishFlameByMic() {
+      if (flameOut) return;
+      flameOut = true;
+      haptic([80, 50, 140]);
+      playWishChime(3);
+
+      document.getElementById('flameOne').classList.add('out');
+      document.getElementById('flameNine').classList.add('out');
+      document.getElementById('candleAura').classList.remove('lit');
+
+      document.getElementById('smokeOne').classList.add('rise');
+      document.getElementById('smokeNine').classList.add('rise');
+
+      if (window.confetti) {
+        confetti({
+          particleCount: 150,
+          spread: 95,
+          origin: { y: 0.6 },
+          colors: ['#e6c17a', '#e05780', '#ffffff', '#f9e2b3']
+        });
+      }
+
+      setTimeout(() => {
+        document.getElementById('cakeSection').style.display = 'none';
+        const letter = document.getElementById('finalLetterCard');
+        letter.style.display = 'block';
+
+        let i = 0;
+        const box = document.getElementById('typewriterBox');
+        function typeWriter() {
+          if (i < finalMessage.length) {
+            box.innerHTML += finalMessage.charAt(i);
+            i++;
+            setTimeout(typeWriter, 38);
+          }
+        }
+        typeWriter();
+      }, 1500);
+    }
+
+    function initMicListener() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        micUnavailableFallback = true;
+        return;
+      }
+      navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(stream => {
+        const aCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const src = aCtx.createMediaStreamSource(stream);
+        const analyser = aCtx.createAnalyser();
+        analyser.fftSize = 128;
+        src.connect(analyser);
+
+        const freqData = new Uint8Array(analyser.frequencyBinCount);
+        const timeData = new Uint8Array(analyser.fftSize);
+        const bars = document.querySelectorAll('.mic-bar');
+
+        function detectBlow() {
+          if (flameOut) return;
+          analyser.getByteFrequencyData(freqData);
+          analyser.getByteTimeDomainData(timeData);
+
+          let freqSum = 0;
+          bars.forEach((bar, idx) => {
+            const val = freqData[idx] || 0;
+            freqSum += val;
+            const h = Math.max(6, Math.min(34, (val / 255) * 38));
+            bar.style.height = h + 'px';
+          });
+
+          let rmsSum = 0;
+          for (let i = 0; i < timeData.length; i++) {
+            const norm = (timeData[i] - 128) / 128;
+            rmsSum += norm * norm;
+          }
+          const rms = Math.sqrt(rmsSum / timeData.length);
+          const avgFreq = freqSum / bars.length;
+
+          if (cakeReadyForBlow && (avgFreq > 38 || rms > 0.18)) {
+            extinguishFlameByMic();
+            stream.getTracks().forEach(t => t.stop());
+          } else {
+            requestAnimationFrame(detectBlow);
+          }
+        }
+        detectBlow();
+      }).catch(() => {
+        micUnavailableFallback = true;
+        document.getElementById('micStatusLabel').innerText = "✨ انفخي في الموبايل (أو المسي الشمعة لو المايك مقفول) لإطفاء الـ 19";
+      });
+    }
+  </script>
+</body>
+</html>
